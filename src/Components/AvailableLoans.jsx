@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
+import ScrollReveal from "./ScrollReveal";
 
 const AvailableLoans = () => {
   const [loans, setLoans] = useState([]);
@@ -14,7 +15,8 @@ const AvailableLoans = () => {
   }, []);
 
   return (
-    <section className="mt-12 container mx-auto">
+   <ScrollReveal>
+     <section className="mt-12 container mx-auto">
       <div className="flex items-end justify-between mb-6">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-emerald-600">
@@ -99,6 +101,7 @@ const AvailableLoans = () => {
         ))}
       </div>
     </section>
+   </ScrollReveal>
   );
 };
 

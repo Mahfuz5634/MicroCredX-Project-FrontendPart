@@ -47,7 +47,7 @@ const Carousel = () => {
     >
       <Slider {...settings}>
         {slides.map((slide, idx) => (
-          <div key={idx} className="relative h-[260px] md:h-[460px]">
+          <div key={idx} className="relative h-[260px] md:h-[490px]">
             <img
               src={slide.img}
               alt={slide.title}
