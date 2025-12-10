@@ -14,7 +14,7 @@ const Footer = () => {
               className="w-10 h-10 object-contain rounded"
             />
             <div>
-              <h2 className="text-xl font-bold text-green-400">MicroCredX</h2>
+              <h2 className="text-xl font-bold text-green-700">MicroCredX</h2>
               <p className="text-xs uppercase tracking-wide text-slate-400">
                 Microloan Request & Approval
               </p>
