@@ -4,6 +4,7 @@ import Home from "../Components/Home";
 import AllLoans from "../Components/AllLoans";
 import AboutUs from "../Components/AboutUs";
 import Contact from "../Components/Contact";
+import LoanDetails from "../Components/LoanDetails";
 
 
 export const router = createBrowserRouter([
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path:'contact',
         Component:Contact
+      }
+      ,{
+        path:'loan-details/:id',
+        Component:LoanDetails
       }
     ]
   },

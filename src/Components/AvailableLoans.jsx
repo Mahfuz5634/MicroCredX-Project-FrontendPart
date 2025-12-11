@@ -84,7 +84,7 @@ const AvailableLoans = () => {
                   EMI options: {loan.emiPlans?.join(" · ")}
                 </p>
                 <Link
-                  to={`/loans/${loan._id}`}
+                  to={`/loan-details/${loan._id}`}
                   className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700"
                 >
                   View Details
