@@ -1,7 +1,54 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Authcontext } from "../../ContextApi/AuthContext";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import toast from "react-hot-toast";
+import { Navigate, useNavigate } from "react-router";
 
-const Login = () => (
-  <main className="min-h-screen bg-slate-950 relative overflow-hidden">
+const Login = () => {
+    const navigate = useNavigate();  
+   
+    const {auth,LogInFunc}=useContext(Authcontext);
+    const provider = new GoogleAuthProvider();
+
+    const googlelogin = () => {
+    signInWithPopup(auth, provider)
+      .then(() => toast.success("Successfully Logged In"))
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
+
+
+  const handlelogin=(e)=>{
+    e.preventDefault();
+    const email=e.target.email.value;
+    const password=e.target.password.value;
+    
+    LogInFunc(email, password)
+      .then(() => {
+        toast.success("Successfully Logged In");
+        navigate('/');
+        e.target.reset();
+      })
+      .catch((error) => {
+        switch (error.code) {
+          case "auth/user-not-found":
+            toast.error("❌ No account found with this email.");
+            break;
+          case "auth/wrong-password":
+            toast.error("❌ Incorrect password. Please try again.");
+            break;
+          case "auth/invalid-email":
+            toast.error("❌ Please enter a valid email address.");
+            break;
+          default:
+            toast.error(`⚠️ ${error.message}`);
+        }
+      });
+  }
+
+
+  return(<main className="min-h-screen bg-slate-950 relative overflow-hidden">
  
     <div className="pointer-events-none absolute inset-0 -z-10">
       <div className="absolute -top-24 -left-10 h-72 w-72 rounded-full bg-emerald-400/25 blur-3xl" />
@@ -24,13 +71,14 @@ const Login = () => (
         </div>
 
         <div className="rounded-3xl border border-white/15 bg-white/5 px-6 py-6 md:px-7 md:py-7 shadow-[0_18px_45px_rgba(15,23,42,0.85)] backdrop-blur-2xl">
-          <form className="space-y-4">
+          <form onSubmit={handlelogin} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-slate-200 mb-1.5">
                 Email address
               </label>
               <input
                 type="email"
+                name="email"
                 placeholder="you@example.com"
                 className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 shadow-sm focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
               />
@@ -50,6 +98,7 @@ const Login = () => (
               </div>
               <input
                 type="password"
+                name="password"
                 placeholder="Enter your password"
                 className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 shadow-sm focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
               />
@@ -80,6 +129,7 @@ const Login = () => (
           </div>
 
           <button
+            onClick={googlelogin}
             type="button"
             className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-medium text-slate-100 hover:bg-white/10"
           >
@@ -126,6 +176,6 @@ const Login = () => (
       </div>
     </section>
   </main>
-);
+)};
 
 export default Login;

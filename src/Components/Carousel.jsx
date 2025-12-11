@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import img1 from "../assets/personal-loan-2024.jpg";
 import img2 from "../assets/personal-home-loan.jpg";
 import img3 from "../assets/homeloan.png";
+import { NavLink } from "react-router";
 
 const Carousel = () => {
   const settings = {
@@ -54,10 +55,10 @@ const Carousel = () => {
               className="w-full h-full object-cover"
             />
 
-            {/* gradient overlay */}
+           
             <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 via-slate-900/40 to-transparent" />
 
-            {/* caption + buttons */}
+          
             <div className="absolute inset-0 flex items-center">
               <div className="px-6 md:px-12">
                 <div className="max-w-xl rounded-xl px-5 py-4 md:px-8 md:py-6 shadow-lg">
@@ -70,9 +71,9 @@ const Carousel = () => {
                   </p>
 
                   <div className="mt-4 flex flex-wrap gap-3">
-                    <button className="px-4 py-2 md:px-5 md:py-2.5 rounded-full border border-emerald-400 text-emerald-200 hover:bg-emerald-500/10 text-sm md:text-base font-medium">
+                    <NavLink to={'/all-loans'} className="px-4 py-2 md:px-5 md:py-2.5 rounded-full border border-emerald-400 text-emerald-200 hover:bg-emerald-500/10 text-sm md:text-base font-medium">
                       Explore Loans
-                    </button>
+                    </NavLink>
                   </div>
                 </div>
               </div>

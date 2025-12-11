@@ -280,6 +280,7 @@ const Navbar = () => {
                   <div className="w-10 rounded-full ring ring-green-500 ring-offset-2 ring-offset-slate-950">
                     {user?.photoURL ? (
                       <img src={user.photoURL} alt={user.displayName} className="w-10 h-10 object-cover rounded-full" />
+                      
                     ) : (
                       <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center rounded-full text-white font-semibold text-sm">
                         {user?.displayName?.charAt(0)?.toUpperCase() || "U"}
