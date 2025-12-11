@@ -1,6 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { Authcontext } from "../../../ContextApi/AuthContext";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile,
+} from "firebase/auth";
+import toast from "react-hot-toast";
 
 const Register = () => {
+  const { SignInFunc, auth } = useContext(Authcontext);
+  const provider = new GoogleAuthProvider();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -81,6 +91,83 @@ const Register = () => {
     }
 
     console.log("Register data:", formData);
+
+    const name = formData.name;
+    const role = formData.role;
+    const email = formData.email;
+    const photo = formData.photoURL;
+    const password = formData.password;
+
+    //email,pass signin
+    SignInFunc(email, password)
+      .then((res) => {
+        updateProfile(res.user, {
+          displayName: name,
+          photoURL: photo,
+        })
+          .then(() => {
+            toast.success("Register Account Successfully");
+            e.target.reset();
+          })
+          .catch((error) => {
+            switch (error.code) {
+              case "auth/email-already-in-use":
+                toast.error(
+                  "This email is already registered. Please login or use another email."
+                );
+                break;
+              case "auth/invalid-email":
+                toast.error(
+                  "Invalid email format. Please enter a valid email."
+                );
+                break;
+              case "auth/operation-not-allowed":
+                toast.error(
+                  "Email/password accounts are not enabled. Contact support."
+                );
+                break;
+              case "auth/weak-password":
+                toast.error(
+                  "Password is too weak. Must be at least 6 characters long and include uppercase & lowercase letters."
+                );
+                break;
+              default:
+                toast.error("Something went wrong: " + error.message);
+            }
+          });
+      })
+      .catch((error) => {
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            toast.error(
+              "This email is already registered. Please login or use another email."
+            );
+            break;
+          case "auth/invalid-email":
+            toast.error("Invalid email format. Please enter a valid email.");
+            break;
+          case "auth/operation-not-allowed":
+            toast.error(
+              "Email/password accounts are not enabled. Contact support."
+            );
+            break;
+          case "auth/weak-password":
+            toast.error(
+              "Password is too weak. Must be at least 6 characters long and include uppercase & lowercase letters."
+            );
+            break;
+          default:
+            toast.error("Something went wrong: " + error.message);
+        }
+      });
+  };
+  //googlesignin
+  const Googlesignin = () => {
+    signInWithPopup(auth, provider)
+      .then(() => toast.success("Register Account Succesfully"))
+      .cathc((error) => {
+        toast.error("Something went wrong: " + error.message);
+      });
   };
 
   const isFormValid =
@@ -93,13 +180,11 @@ const Register = () => {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-slate-950 relative overflow-hidden p-4">
-   
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-24 -right-10 h-72 w-72 rounded-full bg-emerald-400/25 blur-3xl" />
         <div className="absolute -bottom-32 left-0 h-80 w-80 rounded-full bg-lime-400/25 blur-3xl" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_60%)]" />
       </div>
-
 
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
@@ -113,7 +198,6 @@ const Register = () => {
 
         <div className="rounded-3xl border border-white/15 bg-white/5 px-6 py-8 md:px-8 md:py-10 shadow-[0_18px_45px_rgba(15,23,42,0.85)] backdrop-blur-2xl">
           <form onSubmit={handleSubmit} className="space-y-5">
-           
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-200 mb-1.5">
@@ -155,7 +239,6 @@ const Register = () => {
               </div>
             </div>
 
-         
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-200 mb-1.5">
@@ -174,7 +257,9 @@ const Register = () => {
                   }`}
                 />
                 {errors.email && (
-                  <p className="mt-1 text-[11px] text-red-400">{errors.email}</p>
+                  <p className="mt-1 text-[11px] text-red-400">
+                    {errors.email}
+                  </p>
                 )}
               </div>
 
@@ -193,7 +278,6 @@ const Register = () => {
               </div>
             </div>
 
-           
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-200 mb-1.5">
@@ -221,7 +305,9 @@ const Register = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="mt-1 text-[11px] text-red-400">{errors.password}</p>
+                  <p className="mt-1 text-[11px] text-red-400">
+                    {errors.password}
+                  </p>
                 )}
               </div>
 
@@ -251,12 +337,13 @@ const Register = () => {
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className="mt-1 text-[11px] text-red-400">{errors.confirmPassword}</p>
+                  <p className="mt-1 text-[11px] text-red-400">
+                    {errors.confirmPassword}
+                  </p>
                 )}
               </div>
             </div>
 
-         
             <div className="pt-2">
               <div className="space-y-1 text-[11px] p-3 bg-white/5 rounded-xl border border-white/10">
                 <div
@@ -310,7 +397,6 @@ const Register = () => {
               </div>
             </div>
 
-        
             <div className="flex items-start gap-2 pt-1">
               <input
                 type="checkbox"
@@ -341,46 +427,48 @@ const Register = () => {
             >
               Create account
             </button>
-
-          
-            <button
-              type="button"
-              className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-medium text-slate-100 hover:bg-white/10"
-            >
-              <svg
-                aria-label="Google logo"
-                width="16"
-                height="16"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <g>
-                  <path d="m0 0H512V512H0" fill="#fff"></path>
-                  <path
-                    fill="#34a853"
-                    d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
-                  ></path>
-                  <path
-                    fill="#4285f4"
-                    d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
-                  ></path>
-                  <path
-                    fill="#fbbc02"
-                    d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
-                  ></path>
-                  <path
-                    fill="#ea4335"
-                    d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
-                  ></path>
-                </g>
-              </svg>
-              Login with Google
-            </button>
           </form>
+          <button
+          onClick={ Googlesignin }
+            type="button"
+            className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-medium text-slate-100 hover:bg-white/10"
+          >
+            <svg
+              aria-label="Google logo"
+              width="16"
+              height="16"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+            >
+              <g>
+                <path d="m0 0H512V512H0" fill="#fff"></path>
+                <path
+                  fill="#34a853"
+                  d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
+                ></path>
+                <path
+                  fill="#4285f4"
+                  d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
+                ></path>
+                <path
+                  fill="#fbbc02"
+                  d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
+                ></path>
+                <path
+                  fill="#ea4335"
+                  d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
+                ></path>
+              </g>
+            </svg>
+            Sign with Google
+          </button>
 
           <p className="mt-6 text-center text-[11px] text-slate-400">
             Already have an account?{" "}
-            <a href="/login" className="text-emerald-300 hover:text-emerald-200 font-medium">
+            <a
+              href="/login"
+              className="text-emerald-300 hover:text-emerald-200 font-medium"
+            >
               Sign in instead
             </a>
           </p>
