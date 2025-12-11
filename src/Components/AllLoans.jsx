@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const getLoanImage = (loan) =>
   loan.image ||
@@ -30,7 +31,7 @@ const AllLoans = () => {
 if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-      <span className="loading loading-bars loading-xl"></span>
+      <ScaleLoader color="#2cc786" />
       </div>
     );
   }

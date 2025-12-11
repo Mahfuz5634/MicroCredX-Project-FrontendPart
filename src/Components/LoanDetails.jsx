@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const LoanDetails = () => {
   const [loan, setLoan] = useState(null);
@@ -25,7 +26,7 @@ const LoanDetails = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-      <span className="loading loading-bars loading-xl"></span>
+     <ScaleLoader color="#2cc786" />
       </div>
     );
   }
