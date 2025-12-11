@@ -5,6 +5,8 @@ import AllLoans from "../Components/AllLoans";
 import AboutUs from "../Components/AboutUs";
 import Contact from "../Components/Contact";
 import LoanDetails from "../Components/LoanDetails";
+import Login from "../Components/Login/Login";
+import Register from "../Components/Login/Register/Register";
 
 
 export const router = createBrowserRouter([
@@ -31,6 +33,14 @@ export const router = createBrowserRouter([
       ,{
         path:'loan-details/:id',
         Component:LoanDetails
+      },
+      {
+        path:'/login',
+        Component:Login
+      },
+      {
+        path:'/register',
+        Component:Register
       }
     ]
   },
