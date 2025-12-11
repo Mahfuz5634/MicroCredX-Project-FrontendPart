@@ -1,11 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
-const Contact = () => (
-  <motion.main
+const Contact = () => {
+
+const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+        <ScaleLoader color="#2cc786" />
+      </div>
+    );
+  }
+
+
+  return(<motion.main
    initial={{ scale: 0 }}
       animate={{ scale: 1, transition: { duration: 0.4 } }}
-      className="mt-2"
+
    className="min-h-screen bg-slate-950 relative overflow-hidden">
     {/* background accents */}
     <div className="pointer-events-none absolute inset-0 -z-10">
@@ -175,6 +197,6 @@ const Contact = () => (
       </div>
     </section>
   </motion.main>
-);
+)};
 
 export default Contact;
