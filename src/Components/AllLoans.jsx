@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "motion/react";
 
 const getLoanImage = (loan) =>
-  loan.image || loan.imageUrl || loan.photo || loan.thumbnail || "/assets/default-loan.png";
+  loan.image ||
+  loan.imageUrl ||
+  loan.photo ||
+  loan.thumbnail ||
+  "/assets/default-loan.png";
 
 const AllLoans = () => {
   const [loans, setLoans] = useState([]);
@@ -21,7 +26,11 @@ const AllLoans = () => {
   }, []);
 
   return (
-    <section className="mt-2">
+    <motion.section
+      initial={{ scale: 0 }}
+      animate={{ scale: 1, transition: { duration: 0.4 } }}
+      className="mt-2"
+    >
       <div className="container mx-auto px-4 py-12">
         {/* header */}
         <div className="text-left">
@@ -94,7 +103,9 @@ const AllLoans = () => {
                       </p>
                     </div>
                     <div>
-                      <p className="text-[11px] text-slate-400">Interest rate</p>
+                      <p className="text-[11px] text-slate-400">
+                        Interest rate
+                      </p>
                       <p className="mt-1 font-semibold text-slate-900">
                         {loan.interestRate
                           ? `${loan.interestRate}% p.a.`
@@ -135,7 +146,7 @@ const AllLoans = () => {
           </div>
         )}
       </div>
-    </section>
+    </motion.section>
   );
 };
 

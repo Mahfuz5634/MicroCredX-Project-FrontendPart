@@ -1,7 +1,12 @@
 import React from "react";
+import { motion } from "motion/react";
 
 const Contact = () => (
-  <main className="min-h-screen bg-slate-950 relative overflow-hidden">
+  <motion.main
+   initial={{ scale: 0 }}
+      animate={{ scale: 1, transition: { duration: 0.4 } }}
+      className="mt-2"
+   className="min-h-screen bg-slate-950 relative overflow-hidden">
     {/* background accents */}
     <div className="pointer-events-none absolute inset-0 -z-10">
       <div className="absolute -top-24 -left-10 h-72 w-72 rounded-full bg-emerald-400/20 blur-3xl" />
@@ -169,7 +174,7 @@ const Contact = () => (
         </aside>
       </div>
     </section>
-  </main>
+  </motion.main>
 );
 
 export default Contact;

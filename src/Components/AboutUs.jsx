@@ -1,7 +1,11 @@
 import React from "react";
+import { motion } from "motion/react";
 
 const AboutUs = () => (
-  <main className="bg-slate-950 text-slate-50">
+  <motion.main 
+   initial={{ scale: 0 }}
+      animate={{ scale: 1, transition: { duration: 0.4 } }}
+  className="bg-slate-950 text-slate-50">
     {/* Hero / intro */}
     <section className="relative overflow-hidden pt-24 pb-20">
       {/* background accents */}
@@ -247,7 +251,7 @@ const AboutUs = () => (
         </button>
       </div>
     </section>
-  </main>
+  </motion.main>
 );
 
 export default AboutUs;

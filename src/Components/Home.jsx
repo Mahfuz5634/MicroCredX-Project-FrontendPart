@@ -9,7 +9,7 @@ import CoreBankingServices from './Corebanking';
 
 const Home = () => {
     return (
-        <div className='container mx-auto'>
+        <div>
             <Carousel></Carousel>
            <CoreBankingServices></CoreBankingServices>
             <AvailableLoans></AvailableLoans>
