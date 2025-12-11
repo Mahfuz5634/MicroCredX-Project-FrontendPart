@@ -67,7 +67,7 @@ const Navbar = () => {
 
       <li>
         <NavLink
-          to="/about"
+          to="/about-us"
           className={({ isActive }) =>
             isActive ? "text-green-700 font-semibold" : ""
           }

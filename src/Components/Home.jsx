@@ -5,12 +5,13 @@ import HowItWorks from './HowItWorks';
 import CustomerFeedback from './Review';
 import WhyChoose from './ChooseUs';
 import LoanCategories from './LoanCat';
+import CoreBankingServices from './Corebanking';
 
 const Home = () => {
     return (
-        <div>
+        <div className='container mx-auto'>
             <Carousel></Carousel>
-             <LoanCategories></LoanCategories>
+           <CoreBankingServices></CoreBankingServices>
             <AvailableLoans></AvailableLoans>
             <HowItWorks></HowItWorks>
             
