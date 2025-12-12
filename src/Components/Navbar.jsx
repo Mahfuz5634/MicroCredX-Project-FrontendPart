@@ -137,9 +137,8 @@ const Navbar = () => {
   return (
     <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div className="navbar container mx-auto bg-white max-w-7xl">
-        {/* left side */}
+      
         <div className="navbar-start">
-          {/* mobile dropdown */}
           <div className="dropdown">
             <label tabIndex={0} className="btn btn-ghost lg:hidden">
               <svg

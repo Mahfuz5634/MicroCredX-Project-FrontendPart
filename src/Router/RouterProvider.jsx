@@ -9,6 +9,15 @@ import Login from "../Components/Login/Login";
 import Register from "../Components/Login/Register/Register";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import LoanApplicationForm from "../Pages/LoanApplication";
+import DashboardLayout from "../Layouts/DashboardLayout";
+import Overview from "../Pages/Overview";
+import ManageLoans from "../Pages/ManageLoans";
+import AddLoan from "../Pages/AddLoan";
+import PendingLoans from "../Pages/PendingLoans";
+import ApprovedLoans from "../Pages/ApprovedLoans";
+import AllLoanAdmin from "../Pages/AllLoanAdmin";
+import MyLoans from "../Pages/MyLoans";
+import Profile from "../Pages/Profile";
 
 
 export const router = createBrowserRouter([
@@ -50,4 +59,18 @@ export const router = createBrowserRouter([
       }
     ]
   },
+  {
+  path: "/dashboard",
+  element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
+  children: [
+    { index: true, element: <Overview /> },
+    { path: "add-loan", element: <AddLoan /> },
+    { path: "manage-loans", element: <ManageLoans /> },
+    { path: "pending-loans", element: <PendingLoans /> },
+    { path: "approved-loans", element: <ApprovedLoans/> },
+    { path: "all-loan", element: <AllLoanAdmin /> },
+    { path: "my-loans", element: <MyLoans /> },
+    { path: "profile", element: <Profile /> },
+  ],
+}
 ]);
