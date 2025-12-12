@@ -1,19 +1,20 @@
-// src/layouts/DashboardLayout.jsx
 import React, { useContext, useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router";
 import { Authcontext } from "../ContextApi/AuthContext";
-import logo from '../assets/logo2.jpg'
+import logo from "../assets/logo2.jpg";
 
 const DashboardLayout = () => {
   const { user } = useContext(Authcontext);
-  const [role,setrole]=useState('');
+  const [role, setRole] = useState("");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-      fetch(`http://localhost:3000/user-role/${user.email}`)
-        .then((res) => res.json())
-        .then((data) => setrole(data.role));
-    }, [user.email]);
+    if (!user?.email) return;
+    fetch(`http://localhost:3000/user-role/${user.email}`)
+      .then((res) => res.json())
+      .then((data) => setRole(data.role || "borrower"))
+      .catch(() => setRole("borrower"));
+  }, [user?.email]);
 
   const linkBase =
     "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors";
@@ -149,22 +150,31 @@ const DashboardLayout = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-emerald-50/20 flex">
-      <aside className="w-64 bg-white/95 border-r border-slate-200 hidden md:flex flex-col backdrop-blur-sm">
+    <div className="min-h-screen bg-slate-50 flex">
+     
+      <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col">
         <div className="px-5 py-4 border-b border-slate-200">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-sm font-bold text-emerald-600">
-               <img src={logo} alt="" />
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl overflow-hidden ring-1 ring-emerald-100 bg-emerald-50 flex items-center justify-center">
+              <img
+                src={logo}
+                alt="MicroCredX logo"
+                className="h-full w-full object-cover"
+              />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">MicroCredX</h2>
-              <p className="text-[11px] text-slate-500">Loan Dashboard</p>
+              <h2 className="text-sm font-semibold text-slate-900 tracking-tight">
+                MicroCredX
+              </h2>
+              <p className="text-[11px] text-slate-500">
+                Loan Dashboard
+              </p>
             </div>
           </div>
         </div>
 
         <nav className="flex-1 p-3">
-          <ul className="space-y-1">
+          <ul className="space-y-1 text-sm">
             {role === "admin" && adminLinks}
             {role === "manager" && managerLinks}
             {role === "borrower" && borrowerLinks}
@@ -174,18 +184,32 @@ const DashboardLayout = () => {
           </ul>
         </nav>
 
-        <div className="px-4 py-3 border-t border-slate-200 text-[11px] text-slate-400">
+        <div className="px-4 py-3 border-t border-slate-300 text-[11px] text-slate-600">
           Microloan management made simple.
         </div>
       </aside>
 
+     
       {open && (
         <div className="fixed inset-0 z-40 flex md:hidden">
           <div className="w-64 bg-white border-r border-slate-200 flex flex-col">
             <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-bold text-slate-900">MicroCredX</h2>
-                <p className="text-[11px] text-slate-500">Loan Dashboard</p>
+              <div className="flex items-center gap-2">
+                <div className="h-7 w-7 rounded-lg overflow-hidden bg-emerald-50">
+                  <img
+                    src={logo}
+                    alt="MicroCredX"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-slate-900">
+                    MicroCredX
+                  </h2>
+                  <p className="text-[11px] text-slate-500">
+                    Loan Dashboard
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -205,12 +229,17 @@ const DashboardLayout = () => {
               </ul>
             </nav>
           </div>
-          <div className="flex-1 bg-black/30" onClick={() => setOpen(false)} />
+          <div
+            className="flex-1 bg-black/30"
+            onClick={() => setOpen(false)}
+          />
         </div>
       )}
 
+     
       <div className="flex-1 flex flex-col">
-        <header className="h-14 bg-white/90 border-b border-slate-200 flex items-center justify-between px-4 md:px-6 backdrop-blur-sm">
+      
+        <header className="h-17 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-3">
             <button
               className="md:hidden p-1 rounded-md border border-slate-200 text-slate-600"
@@ -229,11 +258,16 @@ const DashboardLayout = () => {
           </div>
 
           <div className="flex items-center gap-3 text-xs text-slate-500">
-            <span className="hidden sm:inline">
-              Role: <span className="font-semibold capitalize">{role}</span>
-            </span>
+            <div className="hidden sm:flex flex-col items-end leading-tight">
+              <span className="font-medium text-slate-700 truncate max-w-[140px]">
+                {user?.displayName || user?.email}
+              </span>
+              <span className="text-[11px] capitalize">
+                Role: {role || "loading"}
+              </span>
+            </div>
             <div className="avatar">
-              <div className="w-9 h-9 rounded-full bg-slate-200 overflow-hidden">
+              <div className="w-9 h-9 rounded-full bg-slate-200 overflow-hidden ring-1 ring-slate-200">
                 {user?.photoURL && (
                   <img
                     src={user.photoURL}
@@ -245,8 +279,12 @@ const DashboardLayout = () => {
             </div>
           </div>
         </header>
-        <main className="flex-1 px-4 md:px-6 py-5">
-          <Outlet />
+
+       
+        <main className="flex-1 px-3 sm:px-4 md:px-6 py-4 md:py-5">
+          <div className="max-w-6xl mx-auto">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

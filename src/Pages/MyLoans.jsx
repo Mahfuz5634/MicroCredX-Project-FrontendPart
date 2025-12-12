@@ -1,11 +1,12 @@
-// src/pages/Dashboard/MyLoans.jsx
 import React, { useContext, useEffect, useState } from "react";
 import { Authcontext } from "../ContextApi/AuthContext";
+import Swal from "sweetalert2";
 
 const MyLoans = () => {
   const [apps, setApps] = useState([]);
   const [selected, setSelected] = useState(null);
   const { user } = useContext(Authcontext);
+  const [load, setLoad] = useState(false);
 
   useEffect(() => {
     if (!user?.email) return;
@@ -13,151 +14,285 @@ const MyLoans = () => {
       .then((res) => res.json())
       .then((data) => setApps(data))
       .catch(console.error);
-  }, [user?.email]);
+  }, [user?.email, load]);
 
-  const handleCancel = (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to cancel this loan application?"
-    );
-    if (!confirmed) return;
-
-    fetch(`http://localhost:3000/cancel-loan/${id}`, {
-      method: "PATCH",
-    })
-      .then((res) => res.json())
-      .then(() => {
-        setApps((prev) =>
-          prev.map((app) =>
-            app._id === id ? { ...app, status: "Cancelled" } : app
-          )
-        );
-      })
-      .catch(console.error);
+  const deleteItems = (id) => {
+    Swal.fire({
+      title: "Delete this loan application?",
+      text: "This action cannot be undone once deleted.",
+      icon: "warning",
+      iconColor: "#f97316",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete",
+      cancelButtonText: "No, keep it",
+      buttonsStyling: false,
+      customClass: {
+        popup: "rounded-2xl shadow-lg",
+        title: "text-slate-900 text-base font-semibold",
+        htmlContainer: "text-slate-500 text-sm",
+        confirmButton:
+          "btn btn-sm bg-rose-600 hover:bg-rose-700 text-white border-0 px-4",
+        cancelButton:
+          "btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-700 border-0 px-4 ml-2",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:3000/delete-loan/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then(() => {
+            setLoad((prev) => !prev);
+            Swal.fire({
+              title: "Deleted",
+              text: "The loan application has been removed.",
+              icon: "success",
+              iconColor: "#22c55e",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              customClass: {
+                popup: "rounded-2xl shadow-md",
+                title: "text-slate-900 text-sm font-semibold",
+                htmlContainer: "text-slate-500 text-xs",
+              },
+            });
+          });
+      }
+    });
   };
 
   const handlePay = (id) => {
-    // integrate payment later
     alert("Redirecting to payment...");
   };
 
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="text-xl font-semibold text-slate-900">
-          My Loans
-        </h2>
-        <p className="text-xs text-slate-500 mt-1">
-          Track your submitted loan applications and manage payments.
-        </p>
+      {/* header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
+            My Loans
+          </h2>
+          <p className="text-xs text-slate-500 mt-1">
+            Track your loan applications, status, and fees in one place.
+          </p>
+        </div>
+        <div className="text-[11px] text-slate-500">
+          Total applications:{" "}
+          <span className="font-semibold text-slate-800">
+            {apps.length}
+          </span>
+        </div>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-xl border border-slate-100 shadow-sm">
-        <table className="table table-sm">
-          <thead>
-            <tr className="text-xs text-slate-500">
-              <th>Loan ID</th>
-              <th>Loan Info</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th className="text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {apps.map((app) => (
-              <tr key={app._id} className="text-xs">
-                <td className="font-mono text-[11px] text-slate-500">
-                  {app._id.slice(-6)}
-                </td>
-
-                <td>
-                  <div className="font-medium text-slate-800">
-                    {app.loanTitle}
-                  </div>
-                  <div className="text-[11px] text-slate-500">
-                    {app.reason} • {app.incomeSource}
-                  </div>
-                </td>
-
-                <td>
-                  <div className="font-semibold text-slate-800">
-                    ৳{app.loanAmount}
-                  </div>
-                  <div className="text-[11px] text-slate-500">
-                    Interest {app.interestRate}%
-                  </div>
-                </td>
-
-                <td>
-                  <span
-                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
-                    ${
-                      app.status === "Pending"
-                        ? "bg-amber-50 text-amber-700"
-                        : app.status === "Approved"
-                        ? "bg-emerald-50 text-emerald-700"
-                        : app.status === "Rejected"
-                        ? "bg-rose-50 text-rose-700"
-                        : "bg-slate-50 text-slate-600"
-                    }`}
-                  >
-                    {app.status}
-                  </span>
-                </td>
-
-                <td className="text-right space-x-1">
-                  <button
-                    onClick={() => setSelected(app)}
-                    className="btn btn-xs btn-outline"
-                  >
-                    View
-                  </button>
-
-                  {app.status === "Pending" && (
-                    <button
-                      onClick={() => handleCancel(app._id)}
-                      className="btn btn-xs btn-error text-white"
-                    >
-                      Cancel
-                    </button>
-                  )}
-
-                  {app.applicationFeeStatus?.toLowerCase() === "unpaid" && (
-                    <button
-                      onClick={() => handlePay(app._id)}
-                      className="btn btn-xs btn-success text-white"
-                    >
-                      Pay
-                    </button>
-                  )}
-
-                  {app.applicationFeeStatus?.toLowerCase() === "paid" && (
-                    <button className="btn btn-xs btn-outline" disabled>
-                      Paid
-                    </button>
-                  )}
-                </td>
+      {/* table (desktop) */}
+      <div className="hidden md:block">
+        <div className="overflow-x-auto bg-white rounded-xl border border-slate-100 shadow-sm">
+          <table className="table table-sm">
+            <thead>
+              <tr className="text-xs text-slate-500 bg-slate-50/80">
+                <th className="font-medium">Loan ID</th>
+                <th className="font-medium">Loan Info</th>
+                <th className="font-medium">Amount</th>
+                <th className="font-medium">Status</th>
+                <th className="font-medium text-right">Actions</th>
               </tr>
-            ))}
+            </thead>
+            <tbody>
+              {apps.map((app) => (
+                <tr key={app._id} className="text-xs hover:bg-slate-50/60">
+                  <td className="font-mono text-[11px] text-slate-500">
+                    {app._id.slice(-6)}
+                  </td>
 
-            {apps.length === 0 && (
-              <tr>
-                <td
-                  colSpan="5"
-                  className="text-center py-6 text-xs text-slate-400"
+                  <td>
+                    <div className="font-medium text-slate-800">
+                      {app.loanTitle}
+                    </div>
+                    <div className="text-[11px] text-slate-500">
+                      {app.reason} • {app.incomeSource}
+                    </div>
+                  </td>
+
+                  <td>
+                    <div className="font-semibold text-slate-800">
+                      ৳{app.loanAmount}
+                    </div>
+                    <div className="text-[11px] text-slate-500">
+                      Interest {app.interestRate}%
+                    </div>
+                  </td>
+
+                  <td>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
+                      ${
+                        app.status === "Pending"
+                          ? "bg-amber-50 text-amber-700"
+                          : app.status === "Approved"
+                          ? "bg-emerald-50 text-emerald-700"
+                          : app.status === "Rejected"
+                          ? "bg-rose-50 text-rose-700"
+                          : "bg-slate-50 text-slate-600"
+                      }`}
+                    >
+                      {app.status}
+                    </span>
+                  </td>
+
+                  <td className="text-right space-x-1">
+                    <button
+                      onClick={() => setSelected(app)}
+                      className="btn btn-xs btn-outline"
+                    >
+                      View
+                    </button>
+
+                    {app.status === "Pending" && (
+                      <button
+                        onClick={() => deleteItems(app._id)}
+                        className="btn btn-xs btn-error bg-red-500 text-white"
+                      >
+                        Cancel
+                      </button>
+                    )}
+
+                    {app.applicationFeeStatus?.toLowerCase() ===
+                      "unpaid" && (
+                      <button
+                        onClick={() => handlePay(app._id)}
+                        className="btn btn-xs btn-success bg-green-500 text-white"
+                      >
+                        Pay
+                      </button>
+                    )}
+
+                    {app.applicationFeeStatus?.toLowerCase() ===
+                      "paid" && (
+                      <button
+                        className="btn btn-xs btn-outline"
+                        disabled
+                      >
+                        Paid
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+
+              {apps.length === 0 && (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="text-center py-6 text-xs text-slate-400"
+                  >
+                    You have no loan applications yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* mobile cards */}
+      <div className="grid gap-3 md:hidden">
+        {apps.map((app) => (
+          <div
+            key={app._id}
+            className="bg-white rounded-xl border border-slate-100 shadow-sm p-3 flex flex-col gap-2"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="text-[11px] text-slate-400">
+                  ID: {app._id.slice(-6)}
+                </p>
+                <p className="text-sm font-semibold text-slate-900">
+                  {app.loanTitle}
+                </p>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  {app.reason} • {app.incomeSource}
+                </p>
+              </div>
+              <span
+                className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
+                ${
+                  app.status === "Pending"
+                    ? "bg-amber-50 text-amber-700"
+                    : app.status === "Approved"
+                    ? "bg-emerald-50 text-emerald-700"
+                    : app.status === "Rejected"
+                    ? "bg-rose-50 text-rose-700"
+                    : "bg-slate-50 text-slate-600"
+                }`}
+              >
+                {app.status}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between text-xs">
+              <div>
+                <p className="text-[11px] text-slate-500">Amount</p>
+                <p className="font-semibold text-slate-900">
+                  ৳{app.loanAmount}
+                </p>
+                <p className="text-[11px] text-slate-500">
+                  Interest {app.interestRate}%
+                </p>
+              </div>
+              <div className="text-right space-x-1">
+                <button
+                  onClick={() => setSelected(app)}
+                  className="btn btn-xs btn-outline"
                 >
-                  You have no loan applications yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  View
+                </button>
+
+                {app.status === "Pending" && (
+                  <button
+                    onClick={() => deleteItems(app._id)}
+                    className="btn btn-xs btn-error bg-red-500 text-white"
+                  >
+                    Cancel
+                  </button>
+                )}
+
+                {app.applicationFeeStatus?.toLowerCase() ===
+                  "unpaid" && (
+                  <button
+                    onClick={() => handlePay(app._id)}
+                    className="btn btn-xs btn-success bg-green-500 text-white mt-1"
+                  >
+                    Pay
+                  </button>
+                )}
+
+                {app.applicationFeeStatus?.toLowerCase() === "paid" && (
+                  <button
+                    className="btn btn-xs btn-outline mt-1"
+                    disabled
+                  >
+                    Paid
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {apps.length === 0 && (
+          <div className="bg-white rounded-xl border border-dashed border-slate-200 p-4 text-center text-xs text-slate-400">
+            You have no loan applications yet.
+          </div>
+        )}
       </div>
 
-
+      {/* modal */}
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-lg mx-4">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-3">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 sticky top-0 bg-white rounded-t-xl">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900">
                   Loan Application Details
@@ -175,7 +310,7 @@ const MyLoans = () => {
             </div>
 
             <div className="px-4 py-3 space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <p className="text-[11px] text-slate-500">Full Name</p>
                   <p className="font-medium text-slate-800">
@@ -201,20 +336,24 @@ const MyLoans = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">Income Source</p>
+                  <p className="text-[11px] text-slate-500">
+                    Income Source
+                  </p>
                   <p className="font-medium text-slate-800">
                     {selected.incomeSource}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">Monthly Income</p>
+                  <p className="text-[11px] text-slate-500">
+                    Monthly Income
+                  </p>
                   <p className="font-medium text-slate-800">
                     ৳{selected.monthlyIncome}
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-2 border-t border-dashed border-slate-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-dashed border-slate-100">
                 <div>
                   <p className="text-[11px] text-slate-500">Loan Title</p>
                   <p className="font-medium text-slate-800">
@@ -228,7 +367,9 @@ const MyLoans = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">Interest Rate</p>
+                  <p className="text-[11px] text-slate-500">
+                    Interest Rate
+                  </p>
                   <p className="font-medium text-slate-800">
                     {selected.interestRate}%
                   </p>
@@ -239,7 +380,7 @@ const MyLoans = () => {
                     {selected.reason}
                   </p>
                 </div>
-                <div className="col-span-2">
+                <div className="sm:col-span-2">
                   <p className="text-[11px] text-slate-500">Address</p>
                   <p className="font-medium text-slate-800">
                     {selected.address}
@@ -250,14 +391,12 @@ const MyLoans = () => {
               {selected.extraNotes && (
                 <div className="pt-2 border-t border-dashed border-slate-100">
                   <p className="text-[11px] text-slate-500">Extra Notes</p>
-                  <p className="text-slate-800">
-                    {selected.extraNotes}
-                  </p>
+                  <p className="text-slate-800">{selected.extraNotes}</p>
                 </div>
               )}
             </div>
 
-            <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between">
+            <div className="px-4 py-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sticky bottom-0 bg-white rounded-b-xl">
               <div className="space-x-1 text-[11px]">
                 <span
                   className={`inline-flex items-center rounded-full px-2 py-0.5 font-medium
@@ -287,19 +426,20 @@ const MyLoans = () => {
                 </span>
               </div>
 
-              <div className="space-x-2">
+              <div className="space-x-2 text-right">
                 {selected.status === "Pending" && (
                   <button
-                    onClick={() => handleCancel(selected._id)}
-                    className="btn btn-xs btn-error text-white"
+                    onClick={() => deleteItems(selected._id)}
+                    className="btn btn-xs btn-error text-white bg-red-600"
                   >
                     Cancel
                   </button>
                 )}
-                {selected.applicationFeeStatus?.toLowerCase() === "unpaid" && (
+                {selected.applicationFeeStatus?.toLowerCase() ===
+                  "unpaid" && (
                   <button
                     onClick={() => handlePay(selected._id)}
-                    className="btn btn-xs btn-success text-white"
+                    className="btn btn-xs btn-success bg-green-500 text-white"
                   >
                     Pay Fee
                   </button>
