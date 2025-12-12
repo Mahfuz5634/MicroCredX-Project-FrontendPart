@@ -7,6 +7,7 @@ import Contact from "../Components/Contact";
 import LoanDetails from "../Components/LoanDetails";
 import Login from "../Components/Login/Login";
 import Register from "../Components/Login/Register/Register";
+import PrivateRoute from "../PrivateRoute/PrivateRoute";
 
 
 export const router = createBrowserRouter([
@@ -32,7 +33,7 @@ export const router = createBrowserRouter([
       }
       ,{
         path:'loan-details/:id',
-        Component:LoanDetails
+        element:<PrivateRoute><LoanDetails></LoanDetails></PrivateRoute>
       },
       {
         path:'/login',

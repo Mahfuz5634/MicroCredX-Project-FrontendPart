@@ -171,8 +171,16 @@ const Register = () => {
   //googlesignin
   const Googlesignin = () => {
     signInWithPopup(auth, provider)
-      .then(() => toast.success("Register Account Succesfully"))
-      .cathc((error) => {
+      .then(async (result) => {
+      const user = result.user;
+       await axios.post("http://localhost:3000/save-user", {
+        name: user.displayName,
+        email: user.email,
+        role: "user",  
+      });
+       toast.success("Register Account Successfully");
+    })
+      .catch((error) => {
         toast.error("Something went wrong: " + error.message);
       });
   };
