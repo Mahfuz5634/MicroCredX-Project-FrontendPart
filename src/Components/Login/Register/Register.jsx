@@ -6,6 +6,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const Register = () => {
   const { SignInFunc, auth } = useContext(Authcontext);
@@ -93,7 +94,7 @@ const Register = () => {
     console.log("Register data:", formData);
 
     const name = formData.name;
-    const role = formData.role;
+    const UserRole = formData.role;
     const email = formData.email;
     const photo = formData.photoURL;
     const password = formData.password;
@@ -107,6 +108,12 @@ const Register = () => {
         })
           .then(() => {
             toast.success("Register Account Successfully");
+            axios.post("http://localhost:3000/save-user", {
+              name: name,
+              email: email,
+              role:UserRole,
+            });
+
             e.target.reset();
           })
           .catch((error) => {
@@ -429,7 +436,7 @@ const Register = () => {
             </button>
           </form>
           <button
-          onClick={ Googlesignin }
+            onClick={Googlesignin}
             type="button"
             className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-medium text-slate-100 hover:bg-white/10"
           >
