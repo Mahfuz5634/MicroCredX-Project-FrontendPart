@@ -12,7 +12,9 @@ const Login = () => {
 
     const googlelogin = () => {
     signInWithPopup(auth, provider)
-      .then(() => toast.success("Successfully Logged In"))
+      .then(() => {
+        navigate('/')
+        toast.success("Successfully Logged In")})
       .catch((error) => {
         toast.error(error.message);
       });

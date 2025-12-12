@@ -98,7 +98,7 @@ if (loading) {
 
                  
                   <h3 className="text-sm font-semibold text-slate-900">
-                    {loan.name || "Loan Plan"}
+                    {loan.title || "Loan Plan"}
                   </h3>
                   <p className="mt-2 text-xs leading-relaxed text-slate-500 line-clamp-2">
                     {loan.description ||

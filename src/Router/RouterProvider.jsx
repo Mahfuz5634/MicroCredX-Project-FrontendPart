@@ -8,6 +8,7 @@ import LoanDetails from "../Components/LoanDetails";
 import Login from "../Components/Login/Login";
 import Register from "../Components/Login/Register/Register";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
+import LoanApplicationForm from "../Pages/LoanApplication";
 
 
 export const router = createBrowserRouter([
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path:'/register',
         Component:Register
+      },
+      {
+        path:'loan-application',
+        Component:LoanApplicationForm
       }
     ]
   },

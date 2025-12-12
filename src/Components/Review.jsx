@@ -98,7 +98,7 @@ const CustomerFeedback = () => {
         </h2>
         <p className="mt-2 text-sm text-slate-500 max-w-xl mx-auto">
           Short stories from customers who used MicroCredX to manage education,
-          business, and emergency microloans. [file:9]
+          business, and emergency microloans.
         </p>
       </div>
 
