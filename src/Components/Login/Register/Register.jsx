@@ -7,8 +7,11 @@ import {
 } from "firebase/auth";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useNavigate } from "react-router";
+
 
 const Register = () => {
+   const navigate = useNavigate();  
   const { SignInFunc, auth } = useContext(Authcontext);
   const provider = new GoogleAuthProvider();
 
@@ -108,6 +111,7 @@ const Register = () => {
         })
           .then(() => {
             toast.success("Register Account Successfully");
+            navigate('/')
             axios.post("http://localhost:3000/save-user", {
               name: name,
               email: email,
@@ -176,9 +180,11 @@ const Register = () => {
        await axios.post("http://localhost:3000/save-user", {
         name: user.displayName,
         email: user.email,
-        role: "user",  
+        role: "borrower",  
       });
        toast.success("Register Account Successfully");
+       navigate('/')
+
     })
       .catch((error) => {
         toast.error("Something went wrong: " + error.message);

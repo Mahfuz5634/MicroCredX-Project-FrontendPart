@@ -1,21 +1,30 @@
-import React, { useEffect, useState } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import ScaleLoader from "react-spinners/ScaleLoader";
+import { Authcontext } from "../ContextApi/AuthContext";
 
 const LoanDetails = () => {
+  const { user } = useContext(Authcontext);
   const [loan, setLoan] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  const [role, setrole] = useState("");
 
-  useEffect(() => { 
+  useEffect(() => {
+    fetch(`http://localhost:3000/user-role/${user.email}`)
+      .then((res) => res.json())
+      .then((data) => setrole(data.role));
+  }, [user.email]);
+
+  useEffect(() => {
     fetch(`http://localhost:3000/loan-details/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setTimeout(() => {
-        setLoan(data.data || data);
-        setLoading(false);
+          setLoan(data.data || data);
+          setLoading(false);
         }, 600);
-       
       })
       .catch((err) => {
         console.error(err);
@@ -26,7 +35,7 @@ const LoanDetails = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-     <ScaleLoader color="#2cc786" />
+        <ScaleLoader color="#2cc786" />
       </div>
     );
   }
@@ -56,23 +65,15 @@ const LoanDetails = () => {
     <main className="bg-slate-50 min-h-screen">
       <section className="pt-10 pb-16">
         <div className="container mx-auto px-4">
-      
           <div className="text-xs text-slate-500 mb-4">
-            <span className="cursor-pointer hover:text-emerald-600">
-              Home
-            </span>{" "}
+            <span className="cursor-pointer hover:text-emerald-600">Home</span>{" "}
             /{" "}
-            <span className="cursor-pointer hover:text-emerald-600">
-              Loans
-            </span>{" "}
+            <span className="cursor-pointer hover:text-emerald-600">Loans</span>{" "}
             / <span className="text-slate-700">{title}</span>
           </div>
 
-         
           <div className="grid gap-8 lg:grid-cols-[1.2fr,0.9fr] lg:items-start">
-        
             <section className="rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
-           
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-medium text-emerald-700">
                   {category || "Microloan"}
@@ -93,7 +94,6 @@ const LoanDetails = () => {
                   "A flexible microloan designed to help you manage education, business, and personal needs with transparent terms and quick approval."}
               </p>
 
-            
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
                 <div className="rounded-2xl border border-emerald-50 bg-emerald-50/60 p-4">
                   <p className="text-[11px] font-medium text-emerald-700 uppercase tracking-[0.18em]">
@@ -193,7 +193,6 @@ const LoanDetails = () => {
               </div>
             </section>
 
-           
             <aside className="space-y-5">
               {/* image */}
               {image && (
@@ -224,7 +223,15 @@ const LoanDetails = () => {
                 </div>
 
                 <div className="mt-5 flex flex-col gap-2">
-                  <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-4 py-2 text-[11px] font-medium text-white shadow-sm transition-colors hover:bg-emerald-700">
+                  <button
+                    className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-[11px] font-medium shadow-sm transition-colors
+    ${
+      role === "borrower"
+        ? "bg-emerald-600 text-white hover:bg-emerald-700 cursor-pointer"
+        : "bg-gray-400 text-gray-200 cursor-not-allowed"
+    }`}
+                    disabled={role !== "borrower"}
+                  >
                     Start application
                   </button>
                   <button className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-white px-4 py-2 text-[11px] font-medium text-emerald-700 hover:bg-emerald-50">
@@ -233,7 +240,6 @@ const LoanDetails = () => {
                 </div>
               </div>
 
-             
               <div className="rounded-2xl border border-slate-100 bg-white p-4 text-[11px] text-slate-600">
                 <p className="font-semibold text-slate-900">
                   Need help choosing a loan?

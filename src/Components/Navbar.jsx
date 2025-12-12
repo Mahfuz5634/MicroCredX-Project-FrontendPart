@@ -4,8 +4,17 @@ import logo from "../assets/logo2.jpg";
 import { Authcontext } from "../ContextApi/AuthContext";
 import toast from "react-hot-toast";
 
+
 const Navbar = () => {
-  const { user, LogOutFunc } = useContext(Authcontext) || {};
+  const { user, LogOutFunc,loading } = useContext(Authcontext) || {};
+
+   if (loading) {
+    return (
+      <div className="min-h-[60px] flex items-center justify-center">
+        <span className="loading loading-ring loading-lg"></span>
+      </div>
+    );
+  }
   
 
   const logout=()=>{
