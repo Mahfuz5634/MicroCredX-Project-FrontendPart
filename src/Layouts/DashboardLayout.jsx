@@ -8,6 +8,7 @@ import { CgProfile } from "react-icons/cg";
 import { MdManageHistory } from "react-icons/md";
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 import { FaUsers } from "react-icons/fa6";
+import { FaCheckCircle } from "react-icons/fa";
 
 const DashboardLayout = () => {
   const { user } = useContext(Authcontext);
@@ -125,7 +126,7 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><FcApproval /></span>
+          <span className="md:text-xl"><FaCheckCircle /></span>
           <span className="text-slate-700 font-medium">
                Approved Applications
             </span>
