@@ -2,11 +2,19 @@ import React, { useContext, useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router";
 import { Authcontext } from "../ContextApi/AuthContext";
 import logo from "../assets/logo2.jpg";
+import { IoIosTime } from "react-icons/io";
 
 const DashboardLayout = () => {
   const { user } = useContext(Authcontext);
   const [role, setRole] = useState("");
   const [open, setOpen] = useState(false);
+  const [pending, setpending] = useState(0);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/pending-loans-count")
+      .then((res) => res.json())
+      .then((data) => setpending(data.count));
+  }, []);
 
   useEffect(() => {
     if (!user?.email) return;
@@ -72,7 +80,9 @@ const DashboardLayout = () => {
           }
         >
           <span className="text-xs">📋</span>
-          Manage Loans
+       <span className="text-slate-700 font-medium">
+                Manage Loans
+            </span>
         </NavLink>
       </li>
       <li>
@@ -82,8 +92,19 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-xs">⏳</span>
-          Pending Applications
+          <span className="text-sm"><IoIosTime /></span>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-700 font-medium">
+              Pending Applications
+            </span>
+
+            <span
+              className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 
+                   rounded-full bg-red-500 text-white text-[11px] font-semibold"
+            >
+              {pending}
+            </span>
+          </div>
         </NavLink>
       </li>
       <li>
@@ -151,7 +172,6 @@ const DashboardLayout = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
-     
       <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col">
         <div className="px-5 py-4 border-b border-slate-200">
           <div className="flex items-center gap-3">
@@ -166,9 +186,7 @@ const DashboardLayout = () => {
               <h2 className="text-sm font-semibold text-slate-900 tracking-tight">
                 MicroCredX
               </h2>
-              <p className="text-[11px] text-slate-500">
-                Loan Dashboard
-              </p>
+              <p className="text-[11px] text-slate-500">Loan Dashboard</p>
             </div>
           </div>
         </div>
@@ -189,7 +207,6 @@ const DashboardLayout = () => {
         </div>
       </aside>
 
-     
       {open && (
         <div className="fixed inset-0 z-40 flex md:hidden">
           <div className="w-64 bg-white border-r border-slate-200 flex flex-col">
@@ -206,9 +223,7 @@ const DashboardLayout = () => {
                   <h2 className="text-sm font-semibold text-slate-900">
                     MicroCredX
                   </h2>
-                  <p className="text-[11px] text-slate-500">
-                    Loan Dashboard
-                  </p>
+                  <p className="text-[11px] text-slate-500">Loan Dashboard</p>
                 </div>
               </div>
               <button
@@ -229,16 +244,11 @@ const DashboardLayout = () => {
               </ul>
             </nav>
           </div>
-          <div
-            className="flex-1 bg-black/30"
-            onClick={() => setOpen(false)}
-          />
+          <div className="flex-1 bg-black/30" onClick={() => setOpen(false)} />
         </div>
       )}
 
-     
       <div className="flex-1 flex flex-col">
-      
         <header className="h-17 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-3">
             <button
@@ -280,7 +290,6 @@ const DashboardLayout = () => {
           </div>
         </header>
 
-       
         <main className="flex-1 px-3 sm:px-4 md:px-6 py-4 md:py-5">
           <div className="max-w-6xl mx-auto">
             <Outlet />

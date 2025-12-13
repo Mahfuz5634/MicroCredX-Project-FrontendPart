@@ -135,7 +135,7 @@ const handleCancel = async (id) => {
 
       {/* details modal */}
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-3">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 sticky top-0 bg-white rounded-t-xl">
               <div>
