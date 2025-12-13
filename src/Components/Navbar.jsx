@@ -3,6 +3,7 @@ import { useContext } from "react";
 import logo from "../assets/logo2.jpg";
 import { Authcontext } from "../ContextApi/AuthContext";
 import toast from "react-hot-toast";
+import { RiArrowDropDownLine } from "react-icons/ri";
 
 
 const Navbar = () => {
@@ -282,14 +283,20 @@ const Navbar = () => {
           ) : (
            
             <div className="flex items-center gap-2">
+               <span className="md:text-2xl"><RiArrowDropDownLine /></span>
              
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                
                   <div className="w-10 rounded-full ring ring-green-500 ring-offset-2 ring-offset-slate-950">
-                    {user?.photoURL ? (
+                    {user?.photoURL ?<> <div className="flex">
                       <img src={user.photoURL} alt={user.displayName} className="w-10 h-10 object-cover rounded-full" />
                       
-                    ) : (
+                       
+                    </div>
+                      
+                    
+                    </>  : (
                       <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center rounded-full text-white font-semibold text-sm">
                         {user?.displayName?.charAt(0)?.toUpperCase() || "U"}
                       </div>

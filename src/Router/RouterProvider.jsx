@@ -18,6 +18,7 @@ import ApprovedLoans from "../Pages/ApprovedLoans";
 import AllLoanAdmin from "../Pages/AllLoanAdmin";
 import MyLoans from "../Pages/MyLoans";
 import Profile from "../Pages/Profile";
+import Users from "../Pages/AdminAlluser";
 
 
 export const router = createBrowserRouter([
@@ -71,6 +72,7 @@ export const router = createBrowserRouter([
     { path: "all-loan", element: <AllLoanAdmin /> },
     { path: "my-loans", element: <MyLoans /> },
     { path: "profile", element: <Profile /> },
+    {path:'all-users',element :<Users></Users>  }
   ],
 }
 ]);

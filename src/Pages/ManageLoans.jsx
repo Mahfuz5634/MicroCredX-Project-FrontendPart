@@ -6,9 +6,10 @@ import axios from "axios";
 
 const ManageLoans = () => {
   const [loans, setLoans] = useState([]);
-  const [editing, setEditing] = useState(null); 
+  const [editing, setEditing] = useState(null);
+  const [load, setLoad] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { user } = useContext(Authcontext);
-  const [load,setload]=useState(false);
 
   useEffect(() => {
     if (!user?.email) return;
@@ -16,24 +17,18 @@ const ManageLoans = () => {
       .then((res) => res.json())
       .then((data) => setLoans(data))
       .catch(console.error);
-  }, [user?.email,load]);
+  }, [user?.email, load]);
 
-  //handle delete button
   const handleDelete = async (id) => {
-  try {
-    await axios.delete(`http://localhost:3000/delete-loan/${id}`);
-    toast.success("Deleted successfully");
-    setload(!load);
-  } catch (error) {
-    toast.error("Delete failed");
-  }
-};
+    try {
+      await axios.delete(`http://localhost:3000/delete-loan/${id}`);
+      toast.success("Deleted successfully");
+      setLoad((p) => !p);
+    } catch {
+      toast.error("Delete failed");
+    }
+  };
 
-  
-
-
-
-  //update-button
   const handleUpdateLoan = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -60,15 +55,25 @@ const ManageLoans = () => {
         prev.map((loan) => (loan._id === editing._id ? updated : loan))
       );
       setEditing(null);
-      toast.success("Loan updated successfully")
+      toast.success("Loan updated successfully");
     } catch (err) {
       console.error(err);
     }
   };
 
+  // filter loans by title or category
+  const filteredLoans = loans.filter((loan) => {
+    if (!searchTerm.trim()) return true;
+    const q = searchTerm.toLowerCase();
+    return (
+      loan.title?.toLowerCase().includes(q) ||
+      loan.category?.toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">
             Manage Loans
@@ -77,11 +82,32 @@ const ManageLoans = () => {
             View, edit, or remove loan products you have created.
           </p>
         </div>
-        <div className="text-[11px] text-slate-500">
-          Total Loans:{" "}
-          <span className="font-semibold text-slate-800">
-            {loans.length}
-          </span>
+
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+          <div className="text-[11px] text-slate-500">
+            Total Loans:{" "}
+            <span className="font-semibold text-slate-800">
+              {loans.length}
+            </span>
+          </div>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search by title or category..."
+              className="w-full sm:w-64 border border-slate-400 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="absolute inset-y-0 right-2 text-slate-400 text-xs"
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -98,7 +124,7 @@ const ManageLoans = () => {
             </tr>
           </thead>
           <tbody>
-            {loans.map((loan) => (
+            {filteredLoans.map((loan) => (
               <tr key={loan._id} className="text-xs hover:bg-slate-50/60">
                 <td>
                   <div className="flex items-center gap-3">
@@ -150,20 +176,25 @@ const ManageLoans = () => {
                   >
                     Edit
                   </button>
-                  <button onClick={()=>handleDelete(loan._id)} className="btn btn-xs btn-error text-white">
+                  <button
+                    onClick={() => handleDelete(loan._id)}
+                    className="btn btn-xs btn-error text-white"
+                  >
                     Delete
                   </button>
                 </td>
               </tr>
             ))}
 
-            {loans.length === 0 && (
+            {filteredLoans.length === 0 && (
               <tr>
                 <td
                   colSpan="5"
                   className="text-center py-6 text-xs text-slate-400"
                 >
-                  No loans found. Add a new loan first.
+                  {loans.length === 0
+                    ? "No loans found. Add a new loan first."
+                    : "No loans match your search."}
                 </td>
               </tr>
             )}

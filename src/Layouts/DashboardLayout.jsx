@@ -6,6 +6,8 @@ import { IoIosTime, IoMdAddCircleOutline, IoMdHome } from "react-icons/io";
 import { FcApproval } from "react-icons/fc";
 import { CgProfile } from "react-icons/cg";
 import { MdManageHistory } from "react-icons/md";
+import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
+import { FaUsers } from "react-icons/fa6";
 
 const DashboardLayout = () => {
   const { user } = useContext(Authcontext);
@@ -144,18 +146,18 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-xs">📊</span>
+          <span className="md:text-xl"><BsFileEarmarkBarGraphFill /></span>
           All Loans
         </NavLink>
       </li>
       <li>
         <NavLink
-          to="/dashboard/users"
+          to="/dashboard/all-users"
           className={({ isActive }) =>
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-xs">👥</span>
+          <span className="md:text-xl"><FaUsers /></span>
           User Management
         </NavLink>
       </li>
