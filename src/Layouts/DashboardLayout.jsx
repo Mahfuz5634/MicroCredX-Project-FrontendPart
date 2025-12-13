@@ -2,7 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router";
 import { Authcontext } from "../ContextApi/AuthContext";
 import logo from "../assets/logo2.jpg";
-import { IoIosTime } from "react-icons/io";
+import { IoIosTime, IoMdAddCircleOutline, IoMdHome } from "react-icons/io";
+import { FcApproval } from "react-icons/fc";
+import { CgProfile } from "react-icons/cg";
+import { MdManageHistory } from "react-icons/md";
 
 const DashboardLayout = () => {
   const { user } = useContext(Authcontext);
@@ -38,8 +41,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-xs">👤</span>
-          My Profile
+          <span className="md:text-xl"><CgProfile /></span>
+        <span className="text-slate-700 font-medium">
+              My Profile
+            </span>
         </NavLink>
       </li>
       <li>
@@ -49,8 +54,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-xs">🏠</span>
-          Back to Home
+          <span className="md:text-xl"><IoMdHome/></span>
+          <span className="text-slate-700 font-medium">
+              Back to Home
+            </span>
         </NavLink>
       </li>
     </>
@@ -68,8 +75,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-xs">➕</span>
-          Add Loan
+          <span className="md:text-xl"><IoMdAddCircleOutline /></span>
+        <span className="text-slate-700 font-medium">
+               Add Loan
+            </span>
         </NavLink>
       </li>
       <li>
@@ -79,7 +88,7 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-xs">📋</span>
+          <span className="md:text-xl"><MdManageHistory /></span>
        <span className="text-slate-700 font-medium">
                 Manage Loans
             </span>
@@ -92,7 +101,7 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-sm"><IoIosTime /></span>
+          <span className="md:text-xl"><IoIosTime /></span>
           <div className="flex items-center gap-2">
             <span className="text-slate-700 font-medium">
               Pending Applications
@@ -114,8 +123,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-xs">✅</span>
-          Approved Applications
+          <span className="md:text-xl"><FcApproval /></span>
+          <span className="text-slate-700 font-medium">
+               Approved Applications
+            </span>
         </NavLink>
       </li>
     </>
@@ -183,7 +194,7 @@ const DashboardLayout = () => {
               />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-slate-900 tracking-tight">
+              <h2 className="text-sm font-bold text-slate-900 tracking-tight">
                 MicroCredX
               </h2>
               <p className="text-[11px] text-slate-500">Loan Dashboard</p>
