@@ -1,6 +1,7 @@
 // src/pages/Dashboard/PendingLoans.jsx
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const PendingLoans = () => {
   const [apps, setApps] = useState([]);
@@ -16,6 +17,7 @@ const PendingLoans = () => {
       { status: "Approved" }
     );
     setload(!load)
+    toast.success("Approved successfully")
   } catch (error) {
     console.error(error);
   }
@@ -29,6 +31,7 @@ const handleCancel = async (id) => {
       { status: "Cancelled" }
     );
      setload(!load)
+     toast.success("Reject successfully")
   } catch (error) {
     console.error(error);
   }
