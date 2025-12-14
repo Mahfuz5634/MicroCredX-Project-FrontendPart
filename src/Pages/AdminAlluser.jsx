@@ -8,9 +8,14 @@ const Users = () => {
   const [roleModalUser, setRoleModalUser] = useState(null);
   const [roleValue, setRoleValue] = useState("borrower");
 
-  const [actionType, setActionType] = useState("approve"); 
+  const [actionType, setActionType] = useState("approve");
   const [suspendReason, setSuspendReason] = useState("");
   const [suspendFeedback, setSuspendFeedback] = useState("");
+
+  // search + filters
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
     fetch("http://localhost:3000/all-user")
@@ -25,7 +30,6 @@ const Users = () => {
     const id = roleModalUser._id;
 
     try {
-    
       if (actionType === "approve") {
         await fetch(`http://localhost:3000/update-role/${id}`, {
           method: "PATCH",
@@ -34,7 +38,9 @@ const Users = () => {
         });
 
         setUsers((prev) =>
-          prev.map((u) => (u._id === id ? { ...u, role: roleValue, status: "active" } : u))
+          prev.map((u) =>
+            u._id === id ? { ...u, role: roleValue, status: "active" } : u
+          )
         );
       } else {
         await fetch(`http://localhost:3000/update-role/${id}`, {
@@ -94,23 +100,73 @@ const Users = () => {
     setSuspendFeedback("");
   };
 
+  // search + filter logic
+  const filteredUsers = users.filter((u) => {
+    const q = searchTerm.toLowerCase().trim();
+    const matchesSearch =
+      !q ||
+      u.name?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q);
+
+    const matchesRole =
+      roleFilter === "All" || (u.role || "borrower") === roleFilter;
+
+    const currentStatus = u.status || "active";
+    const matchesStatus =
+      statusFilter === "All" || currentStatus === statusFilter;
+
+    return matchesSearch && matchesRole && matchesStatus;
+  });
+
   return (
     <div className="space-y-4">
-      {/* header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      {/* header + search/filters */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">
             User Management
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            View all users, approve or suspend roles, or remove accounts.
+            Search users, filter by role/status, approve or suspend accounts.
           </p>
         </div>
-        <div className="text-[11px] text-slate-500">
-          Total users:{" "}
-          <span className="font-semibold text-slate-800">
-            {users.length}
-          </span>
+
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-center text-xs">
+          <div className="text-[11px] text-slate-500">
+            Total users:{" "}
+            <span className="font-semibold text-slate-800">
+              {users.length}
+            </span>
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Search name or email..."
+              className="w-40 sm:w-52 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] bg-white focus:outline-none focus:ring-1 focus:ring-emerald-100"
+            >
+              <option value="All">All roles</option>
+              <option value="borrower">Borrower</option>
+              <option value="manager">Manager</option>
+              <option value="admin">Admin</option>
+            </select>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] bg-white focus:outline-none focus:ring-1 focus:ring-emerald-100"
+            >
+              <option value="All">All status</option>
+              <option value="active">Active</option>
+              <option value="suspended">Suspended</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -140,9 +196,8 @@ const Users = () => {
             )}
 
             {!loading &&
-              users.map((u) => (
+              filteredUsers.map((u) => (
                 <tr key={u._id} className="text-xs hover:bg-slate-50/60">
-                  {/* user + avatar */}
                   <td>
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-200">
@@ -171,12 +226,10 @@ const Users = () => {
                     </div>
                   </td>
 
-                  {/* email */}
                   <td className="hidden md:table-cell text-[11px] text-slate-600">
                     {u.email}
                   </td>
 
-                  {/* role badge */}
                   <td>
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
@@ -191,11 +244,10 @@ const Users = () => {
                     </span>
                   </td>
 
-                  {/* status */}
                   <td>
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                        u.status === "suspended"
+                        (u.status || "active") === "suspended"
                           ? "bg-amber-50 text-amber-700"
                           : "bg-emerald-50 text-emerald-700"
                       }`}
@@ -204,14 +256,12 @@ const Users = () => {
                     </span>
                   </td>
 
-                  {/* joined */}
                   <td className="hidden md:table-cell text-[11px] text-slate-500">
                     {u.createdAt
                       ? new Date(u.createdAt).toLocaleDateString()
                       : "-"}
                   </td>
 
-                  {/* actions */}
                   <td className="text-right space-x-1">
                     <button
                       onClick={() => openRoleModal(u)}
@@ -229,13 +279,13 @@ const Users = () => {
                 </tr>
               ))}
 
-            {!loading && users.length === 0 && (
+            {!loading && filteredUsers.length === 0 && (
               <tr>
                 <td
                   colSpan="6"
                   className="text-center py-6 text-xs text-slate-400"
                 >
-                  No users found.
+                  No users match your filters.
                 </td>
               </tr>
             )}
