@@ -20,7 +20,7 @@ const Users = () => {
     const id = roleModalUser._id;
 
     try {
-      await fetch(`http://localhost:3000/users/${id}/role`, {
+      await fetch(`http://localhost:3000/update-role/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: roleValue }),

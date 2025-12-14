@@ -148,7 +148,26 @@ const DashboardLayout = () => {
           }
         >
           <span className="md:text-xl"><BsFileEarmarkBarGraphFill /></span>
-          All Loans
+        <span className="text-slate-700 font-medium">
+             All Loans
+            </span>
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/dashboard/pending-adminloans"
+          className={({ isActive }) =>
+            `${linkBase} ${isActive ? linkActive : linkInactive}`
+          }
+        >
+          <span className="md:text-xl"><IoIosTime /></span>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-700 font-medium">
+              Loan Applications
+            </span>
+
+           
+          </div>
         </NavLink>
       </li>
       <li>
@@ -159,7 +178,9 @@ const DashboardLayout = () => {
           }
         >
           <span className="md:text-xl"><FaUsers /></span>
+          <span className="text-slate-700 font-medium">
           User Management
+            </span>
         </NavLink>
       </li>
     </>
