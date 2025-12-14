@@ -53,6 +53,7 @@ const Login = () => {
   return(<main className="min-h-screen bg-slate-950 relative overflow-hidden">
  
     <div className="pointer-events-none absolute inset-0 -z-10">
+      <title>MicroCredX-Login</title>
       <div className="absolute -top-24 -left-10 h-72 w-72 rounded-full bg-emerald-400/25 blur-3xl" />
       <div className="absolute -bottom-32 right-0 h-80 w-80 rounded-full bg-lime-400/25 blur-3xl" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_60%)]" />

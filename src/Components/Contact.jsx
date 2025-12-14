@@ -30,6 +30,7 @@ const [loading, setLoading] = useState(true);
 
    className="min-h-screen bg-slate-950 relative overflow-hidden">
     {/* background accents */}
+    <title>MicroCredX-ContactUs</title>
     <div className="pointer-events-none absolute inset-0 -z-10">
       <div className="absolute -top-24 -left-10 h-72 w-72 rounded-full bg-emerald-400/20 blur-3xl" />
       <div className="absolute -bottom-32 right-0 h-80 w-80 rounded-full bg-lime-400/20 blur-3xl" />

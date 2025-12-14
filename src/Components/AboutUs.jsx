@@ -24,12 +24,14 @@ const AboutUs = () => {
 
 
   return (
+   
     <motion.main
       initial={{ scale: 0 }}
       animate={{ scale: 1, transition: { duration: 0.4 } }}
       className="bg-slate-950 text-slate-50"
     >
       {/* Hero / intro */}
+       <title>MicroCredX-Aboutus</title>
       <section className="relative overflow-hidden pt-24 pb-20">
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute -top-24 -left-10 h-64 w-64 rounded-full bg-emerald-400/20 blur-3xl" />

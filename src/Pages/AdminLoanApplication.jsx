@@ -38,6 +38,7 @@ const AdminLoanApplications = () => {
 
   return (
     <div className="space-y-4">
+      <title>MicroCredX-LoanApplication</title>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">

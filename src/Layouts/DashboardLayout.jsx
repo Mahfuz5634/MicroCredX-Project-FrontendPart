@@ -226,7 +226,9 @@ const DashboardLayout = () => {
   );
 
   return (
+    
     <div className="min-h-screen bg-slate-50 flex">
+      <title>MicroCredX-Dashboard</title>
       <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col">
         <div className="px-5 py-4 border-b border-slate-200">
           <div className="flex items-center gap-3">

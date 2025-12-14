@@ -50,6 +50,7 @@ const handleCancel = async (id) => {
 
   return (
     <div className="space-y-4">
+      <title>MicroCredX-PendingLoans</title>
       <div>
         <h2 className="text-xl font-semibold text-slate-900">
           Pending Applications

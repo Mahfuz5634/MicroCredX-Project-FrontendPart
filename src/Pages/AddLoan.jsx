@@ -48,6 +48,7 @@ const AddLoan = () => {
 
   return (
     <div className="max-w-3xl">
+      <title>MicroCredX-AddLoan</title>
       <div className="mb-4 flex items-center justify-between gap-2">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">

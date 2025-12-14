@@ -24,6 +24,7 @@ const Profile = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-5">
+      <title>MicroCredX-MyProfile</title>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-xl sm:text-2xl font-semibold text-slate-900">

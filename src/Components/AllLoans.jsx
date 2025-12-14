@@ -43,6 +43,7 @@ if (loading) {
       className="mt-2"
     >
       <div className="container mx-auto px-4 py-12">
+        <title>MicroCredX-All Loans</title>
       
         <div className="text-left">
           <p className="text-xs uppercase tracking-[0.2em] text-emerald-600">

@@ -10,6 +10,7 @@ import CoreBankingServices from './Corebanking';
 const Home = () => {
     return (
         <div>
+            <title>MicroCredX-Home</title>
             <Carousel></Carousel>
            <CoreBankingServices></CoreBankingServices>
             <AvailableLoans></AvailableLoans>

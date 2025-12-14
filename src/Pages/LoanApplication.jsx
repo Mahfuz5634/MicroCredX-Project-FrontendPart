@@ -37,6 +37,7 @@ const LoanApplicationForm = () => {
 
   return (
     <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-10">
+      <title>MicroCredX-LoanApplication</title>
       <div className="w-full max-w-4xl">
         <div className="mb-6 text-center">
           <p className="text-xs uppercase tracking-[0.25em] text-emerald-600">

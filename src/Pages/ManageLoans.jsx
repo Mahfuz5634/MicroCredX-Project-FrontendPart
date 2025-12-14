@@ -73,6 +73,7 @@ const ManageLoans = () => {
 
   return (
     <div className="space-y-4">
+      <title>MicroCredX-ManageLoans</title>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">

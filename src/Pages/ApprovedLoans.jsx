@@ -13,6 +13,7 @@ const ApprovedLoans = () => {
 
   return (
     <div className="space-y-4">
+      <title>MicroCredX-ApprovedLoans</title>
       <div>
         <h2 className="text-xl font-semibold text-slate-900">
           Approved Applications
