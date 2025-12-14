@@ -44,10 +44,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><CgProfile /></span>
-        <span className="text-slate-700 font-medium">
-              My Profile
-            </span>
+          <span className="md:text-xl">
+            <CgProfile />
+          </span>
+          <span className="text-slate-700 font-medium">My Profile</span>
         </NavLink>
       </li>
       <li>
@@ -57,10 +57,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><IoMdHome/></span>
-          <span className="text-slate-700 font-medium">
-              Back to Home
-            </span>
+          <span className="md:text-xl">
+            <IoMdHome />
+          </span>
+          <span className="text-slate-700 font-medium">Back to Home</span>
         </NavLink>
       </li>
     </>
@@ -78,10 +78,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><IoMdAddCircleOutline /></span>
-        <span className="text-slate-700 font-medium">
-               Add Loan
-            </span>
+          <span className="md:text-xl">
+            <IoMdAddCircleOutline />
+          </span>
+          <span className="text-slate-700 font-medium">Add Loan</span>
         </NavLink>
       </li>
       <li>
@@ -91,10 +91,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><MdManageHistory /></span>
-       <span className="text-slate-700 font-medium">
-                Manage Loans
-            </span>
+          <span className="md:text-xl">
+            <MdManageHistory />
+          </span>
+          <span className="text-slate-700 font-medium">Manage Loans</span>
         </NavLink>
       </li>
       <li>
@@ -104,7 +104,9 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><IoIosTime /></span>
+          <span className="md:text-xl">
+            <IoIosTime />
+          </span>
           <div className="flex items-center gap-2">
             <span className="text-slate-700 font-medium">
               Pending Applications
@@ -126,10 +128,12 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><FaCheckCircle /></span>
+          <span className="md:text-xl">
+            <FaCheckCircle />
+          </span>
           <span className="text-slate-700 font-medium">
-               Approved Applications
-            </span>
+            Approved Applications
+          </span>
         </NavLink>
       </li>
     </>
@@ -147,10 +151,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><BsFileEarmarkBarGraphFill /></span>
-        <span className="text-slate-700 font-medium">
-             All Loans
-            </span>
+          <span className="md:text-xl">
+            <BsFileEarmarkBarGraphFill />
+          </span>
+          <span className="text-slate-700 font-medium">All Loans</span>
         </NavLink>
       </li>
       <li>
@@ -160,13 +164,13 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><IoIosTime /></span>
+          <span className="md:text-xl">
+            <IoIosTime />
+          </span>
           <div className="flex items-center gap-2">
             <span className="text-slate-700 font-medium">
               Loan Applications
             </span>
-
-           
           </div>
         </NavLink>
       </li>
@@ -177,10 +181,10 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="md:text-xl"><FaUsers /></span>
-          <span className="text-slate-700 font-medium">
-          User Management
-            </span>
+          <span className="md:text-xl">
+            <FaUsers />
+          </span>
+          <span className="text-slate-700 font-medium">User Management</span>
         </NavLink>
       </li>
     </>
@@ -198,8 +202,24 @@ const DashboardLayout = () => {
             `${linkBase} ${isActive ? linkActive : linkInactive}`
           }
         >
-          <span className="text-xs">💳</span>
-          My Loans
+          <span className="text-xs">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-credit-card-icon lucide-credit-card"
+            >
+              <rect width="20" height="14" x="2" y="5" rx="2" />
+              <line x1="2" x2="22" y1="10" y2="10" />
+            </svg>
+          </span>
+        <di className="font-semibold">  My Loans</di>
         </NavLink>
       </li>
     </>
