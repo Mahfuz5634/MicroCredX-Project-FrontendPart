@@ -1,12 +1,17 @@
+// src/pages/Dashboard/Users.jsx
 import React, { useEffect, useState } from "react";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [roleModalUser, setRoleModalUser] = useState(null);
   const [roleValue, setRoleValue] = useState("borrower");
 
- 
+  const [actionType, setActionType] = useState("approve"); 
+  const [suspendReason, setSuspendReason] = useState("");
+  const [suspendFeedback, setSuspendFeedback] = useState("");
+
   useEffect(() => {
     fetch("http://localhost:3000/all-user")
       .then((res) => res.json())
@@ -20,16 +25,48 @@ const Users = () => {
     const id = roleModalUser._id;
 
     try {
-      await fetch(`http://localhost:3000/update-role/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: roleValue }),
-      });
+    
+      if (actionType === "approve") {
+        await fetch(`http://localhost:3000/update-role/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role: roleValue, status: "active" }),
+        });
 
-      setUsers((prev) =>
-        prev.map((u) => (u._id === id ? { ...u, role: roleValue } : u))
-      );
+        setUsers((prev) =>
+          prev.map((u) => (u._id === id ? { ...u, role: roleValue, status: "active" } : u))
+        );
+      } else {
+        await fetch(`http://localhost:3000/update-role/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            role: roleValue,
+            status: "suspended",
+            suspendReason,
+            suspendFeedback,
+          }),
+        });
+
+        setUsers((prev) =>
+          prev.map((u) =>
+            u._id === id
+              ? {
+                  ...u,
+                  role: roleValue,
+                  status: "suspended",
+                  suspendReason,
+                  suspendFeedback,
+                }
+              : u
+          )
+        );
+      }
+
       setRoleModalUser(null);
+      setSuspendReason("");
+      setSuspendFeedback("");
+      setActionType("approve");
     } catch (err) {
       console.error(err);
     }
@@ -52,17 +89,21 @@ const Users = () => {
   const openRoleModal = (u) => {
     setRoleModalUser(u);
     setRoleValue(u.role || "borrower");
+    setActionType("approve");
+    setSuspendReason("");
+    setSuspendFeedback("");
   };
 
   return (
     <div className="space-y-4">
+      {/* header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">
             User Management
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            View all users, update their roles, or remove accounts.
+            View all users, approve or suspend roles, or remove accounts.
           </p>
         </div>
         <div className="text-[11px] text-slate-500">
@@ -73,6 +114,7 @@ const Users = () => {
         </div>
       </div>
 
+      {/* table */}
       <div className="overflow-x-auto bg-white rounded-xl border border-slate-100 shadow-sm">
         <table className="table table-sm">
           <thead>
@@ -80,6 +122,7 @@ const Users = () => {
               <th>User</th>
               <th className="hidden md:table-cell">Email</th>
               <th>Role</th>
+              <th>Status</th>
               <th className="hidden md:table-cell">Joined</th>
               <th className="text-right">Actions</th>
             </tr>
@@ -88,7 +131,7 @@ const Users = () => {
             {loading && (
               <tr>
                 <td
-                  colSpan="5"
+                  colSpan="6"
                   className="text-center py-6 text-xs text-slate-400"
                 >
                   Loading users...
@@ -99,6 +142,7 @@ const Users = () => {
             {!loading &&
               users.map((u) => (
                 <tr key={u._id} className="text-xs hover:bg-slate-50/60">
+                  {/* user + avatar */}
                   <td>
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-200">
@@ -127,9 +171,12 @@ const Users = () => {
                     </div>
                   </td>
 
+                  {/* email */}
                   <td className="hidden md:table-cell text-[11px] text-slate-600">
                     {u.email}
                   </td>
+
+                  {/* role badge */}
                   <td>
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
@@ -143,11 +190,28 @@ const Users = () => {
                       {u.role}
                     </span>
                   </td>
+
+                  {/* status */}
+                  <td>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                        u.status === "suspended"
+                          ? "bg-amber-50 text-amber-700"
+                          : "bg-emerald-50 text-emerald-700"
+                      }`}
+                    >
+                      {u.status || "active"}
+                    </span>
+                  </td>
+
+                  {/* joined */}
                   <td className="hidden md:table-cell text-[11px] text-slate-500">
                     {u.createdAt
                       ? new Date(u.createdAt).toLocaleDateString()
                       : "-"}
                   </td>
+
+                  {/* actions */}
                   <td className="text-right space-x-1">
                     <button
                       onClick={() => openRoleModal(u)}
@@ -168,7 +232,7 @@ const Users = () => {
             {!loading && users.length === 0 && (
               <tr>
                 <td
-                  colSpan="5"
+                  colSpan="6"
                   className="text-center py-6 text-xs text-slate-400"
                 >
                   No users found.
@@ -179,6 +243,7 @@ const Users = () => {
         </table>
       </div>
 
+      {/* Approve / Suspend modal */}
       {roleModalUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-3">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-sm">
@@ -208,20 +273,82 @@ const Users = () => {
                   {roleModalUser.role}
                 </p>
               </div>
-              <div>
-                <label className="block text-[11px] text-slate-600 mb-1">
-                  Select new role
-                </label>
-                <select
-                  value={roleValue}
-                  onChange={(e) => setRoleValue(e.target.value)}
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400"
-                >
-                  <option value="borrower">Borrower</option>
-                  <option value="manager">Manager</option>
-                  <option value="admin">Admin</option>
-                </select>
+
+              <div className="grid grid-cols-1 gap-3">
+                <div>
+                  <label className="block text-[11px] text-slate-600 mb-1">
+                    New role
+                  </label>
+                  <select
+                    value={roleValue}
+                    onChange={(e) => setRoleValue(e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400"
+                  >
+                    <option value="borrower">Borrower</option>
+                    <option value="manager">Manager</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] text-slate-600 mb-1">
+                    Action type
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setActionType("approve")}
+                      className={`flex-1 border rounded-lg px-2 py-1.5 text-[11px] ${
+                        actionType === "approve"
+                          ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                          : "border-slate-200 text-slate-600"
+                      }`}
+                    >
+                      Approve / Activate
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActionType("suspend")}
+                      className={`flex-1 border rounded-lg px-2 py-1.5 text-[11px] ${
+                        actionType === "suspend"
+                          ? "border-amber-500 bg-amber-50 text-amber-700"
+                          : "border-slate-200 text-slate-600"
+                      }`}
+                    >
+                      Suspend
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              {actionType === "suspend" && (
+                <div className="space-y-2 pt-2 border-t border-dashed border-slate-100">
+                  <div>
+                    <label className="block text-[11px] text-slate-600 mb-1">
+                      Suspend reason
+                    </label>
+                    <input
+                      type="text"
+                      value={suspendReason}
+                      onChange={(e) => setSuspendReason(e.target.value)}
+                      placeholder="e.g. suspicious activity, policy violation"
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-amber-100 focus:border-amber-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-slate-600 mb-1">
+                      Admin feedback (optional)
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={suspendFeedback}
+                      onChange={(e) => setSuspendFeedback(e.target.value)}
+                      placeholder="Details about why this account was suspended."
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-amber-100 focus:border-amber-400 resize-none"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-end gap-2 text-xs">
@@ -235,7 +362,7 @@ const Users = () => {
                 onClick={handleChangeRole}
                 className="btn btn-xs bg-emerald-500 hover:bg-emerald-600 text-white"
               >
-                Save Role
+                {actionType === "suspend" ? "Suspend User" : "Save Role"}
               </button>
             </div>
           </div>
