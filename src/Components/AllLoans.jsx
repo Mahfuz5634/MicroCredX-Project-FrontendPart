@@ -14,16 +14,15 @@ const AllLoans = () => {
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
 
- 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 9; 
+  const pageSize = 9;
 
   useEffect(() => {
     fetch("http://localhost:3000/home-allloans")
       .then((res) => res.json())
       .then((result) => {
         setTimeout(() => {
-          setLoans(result.data || result); 
+          setLoans(result.data || result);
           setLoading(false);
         }, 600);
       })
@@ -41,7 +40,6 @@ const AllLoans = () => {
     );
   }
 
-  
   const totalPages = Math.ceil(loans.length / pageSize);
 
   const paginatedLoans = loans.slice(
@@ -168,15 +166,15 @@ const AllLoans = () => {
                 {Array.from({ length: totalPages }, (_, idx) => {
                   const page = idx + 1;
                   return (
-                    <input
+                    <button
                       key={page}
-                      className="join-item btn btn-square"
-                      type="radio"
-                      name="loan-pages"
-                      aria-label={String(page)}
-                      checked={currentPage === page}
-                      onChange={() => handlePageChange(page)}
-                    />
+                      className={`join-item btn ${
+                        currentPage === page ? "btn-active" : ""
+                      }`}
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
                   );
                 })}
               </div>

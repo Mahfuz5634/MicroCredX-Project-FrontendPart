@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Authcontext } from "../ContextApi/AuthContext";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const MyLoans = () => {
   const [apps, setApps] = useState([]);
@@ -66,10 +67,26 @@ const MyLoans = () => {
     });
   };
 
-  const handlePay = (id) => {
-    alert("Redirecting to payment...");
-  };
+  
+  const handlePayment = async (appId) => {
+    if (!user?.email) return;
 
+    const paymentInfo = {
+      cost: Number(10),     
+      loanId: appId,       
+      senderEmail: user.email,
+    };
+
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/create-checkout-session",
+        paymentInfo
+      );
+      window.location.href = res.data.url;
+    } catch (error) {
+      console.error("Payment error:", error.response?.data || error.message);
+    }
+  };
   return (
     <div className="space-y-4">
       <title>MicroCredX-MyLoans</title>
@@ -166,7 +183,7 @@ const MyLoans = () => {
                     {app.applicationFeeStatus?.toLowerCase() ===
                       "unpaid" && (
                       <button
-                        onClick={() => handlePay(app._id)}
+                        onClick={() => handlePayment(app._id)}
                         className="btn btn-xs btn-success bg-green-500 text-white"
                       >
                         Pay
@@ -266,7 +283,7 @@ const MyLoans = () => {
                 {app.applicationFeeStatus?.toLowerCase() ===
                   "unpaid" && (
                   <button
-                    onClick={() => handlePay(app._id)}
+                    onClick={() => handlePayment(app._id)}
                     className="btn btn-xs btn-success bg-green-500 text-white mt-1"
                   >
                     Pay
@@ -443,7 +460,7 @@ const MyLoans = () => {
                 {selected.applicationFeeStatus?.toLowerCase() ===
                   "unpaid" && (
                   <button
-                    onClick={() => handlePay(selected._id)}
+                    onClick={() => handlePayment(selected._id)}
                     className="btn btn-xs btn-success bg-green-500 text-white"
                   >
                     Pay Fee

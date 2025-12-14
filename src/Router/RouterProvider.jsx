@@ -20,6 +20,8 @@ import MyLoans from "../Pages/MyLoans";
 import Profile from "../Pages/Profile";
 import Users from "../Pages/AdminAlluser";
 import AdminLoanApplications from "../Pages/AdminLoanApplication";
+import PaymentSuccess from "../Pages/PaymentSucces";
+import PaymentCancel from "../Pages/PaymentCancel";
 
 
 export const router = createBrowserRouter([
@@ -74,7 +76,17 @@ export const router = createBrowserRouter([
     { path: "my-loans", element: <MyLoans /> },
     { path: "profile", element: <Profile /> },
     {path:'all-users',element :<Users></Users>  },
-    {path:"pending-adminloans",element:<AdminLoanApplications></AdminLoanApplications>}
+    {path:"pending-adminloans",element:<AdminLoanApplications></AdminLoanApplications>},
+   
+    
   ],
-}
+},
+ {
+      path:'payment-success',
+      element:<PaymentSuccess></PaymentSuccess>
+    },
+    {
+      path:"payment-cancel",
+      element:<PaymentCancel></PaymentCancel>
+    }
 ]);
