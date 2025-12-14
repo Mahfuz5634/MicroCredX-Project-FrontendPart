@@ -5,16 +5,20 @@ import Swal from "sweetalert2";
 const MyLoans = () => {
   const [apps, setApps] = useState([]);
   const [selected, setSelected] = useState(null);
-  const { user } = useContext(Authcontext);
+  const { user,token} = useContext(Authcontext);
   const [load, setLoad] = useState(false);
 
   useEffect(() => {
     if (!user?.email) return;
-    fetch(`http://localhost:3000/get-loan?email=${user.email}`)
+    fetch(`http://localhost:3000/get-loan?email=${user.email}`,{
+      headers:{
+        "Authorization": `Bearer ${token}`,
+      }
+    })
       .then((res) => res.json())
       .then((data) => setApps(data))
       .catch(console.error);
-  }, [user?.email, load]);
+  }, [user?.email, load,token]);
 
   const deleteItems = (id) => {
     Swal.fire({

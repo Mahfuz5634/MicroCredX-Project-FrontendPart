@@ -1,24 +1,40 @@
 // src/pages/Dashboard/AdminLoanApplications.jsx
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Authcontext } from "../ContextApi/AuthContext";
 
 const AdminLoanApplications = () => {
+  const { user } = useContext(Authcontext);
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("All");
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/all-adminloan")
-      .then((res) => setApps(res.data))
-      .catch((err) => {
+    const fetchLoans = async () => {
+      try {
+        if (!user) return;
+
+        const idToken = await user.getIdToken();
+
+        const res = await axios.get("http://localhost:3000/all-adminloan", {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+
+        setApps(res.data);
+      } catch (err) {
         console.error(err);
         toast.error("Failed to load applications");
-      })
-      .finally(() => setLoading(false));
-  }, []);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLoans();
+  }, [user]);
 
   const filteredApps =
     statusFilter === "All"
@@ -32,7 +48,7 @@ const AdminLoanApplications = () => {
       case "Rejected":
         return "bg-rose-50 text-rose-700";
       default:
-        return "bg-amber-50 text-amber-700"; 
+        return "bg-amber-50 text-amber-700";
     }
   };
 
@@ -164,7 +180,6 @@ const AdminLoanApplications = () => {
         </table>
       </div>
 
-
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-3">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -173,9 +188,7 @@ const AdminLoanApplications = () => {
                 <h3 className="text-sm font-semibold text-slate-900">
                   Loan Application Details
                 </h3>
-                <p className="text-[11px] text-slate-500">
-                  ID: {selected._id}
-                </p>
+                <p className="text-[11px] text-slate-500">ID: {selected._id}</p>
               </div>
               <button
                 onClick={() => setSelected(null)}
@@ -195,9 +208,7 @@ const AdminLoanApplications = () => {
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Email</p>
-                  <p className="font-medium text-slate-900">
-                    {selected.email}
-                  </p>
+                  <p className="font-medium text-slate-900">{selected.email}</p>
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Contact</p>

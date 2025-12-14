@@ -1,7 +1,9 @@
 // src/pages/Dashboard/Users.jsx
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Authcontext } from "../ContextApi/AuthContext";
 
 const Users = () => {
+  const {user}=useContext(Authcontext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,13 +20,29 @@ const Users = () => {
   const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
-    fetch("http://localhost:3000/all-user")
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+  const fetchUsers = async () => {
+    try {
+      const idToken = await user.getIdToken();
 
+      const res = await fetch("http://localhost:3000/all-user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`, 
+        },
+      });
+
+      const data = await res.json();
+      setUsers(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchUsers();
+}, [user]);
   const handleChangeRole = async () => {
     if (!roleModalUser) return;
     const id = roleModalUser._id;
