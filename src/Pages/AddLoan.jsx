@@ -3,7 +3,7 @@ import { Authcontext } from "../ContextApi/AuthContext";
 import toast from "react-hot-toast";
 
 const AddLoan = () => {
-  const { user } = useContext(Authcontext);
+  const { user,token } = useContext(Authcontext);
   const today = new Date().toLocaleDateString();
 
   const handleSubmit = async (e) => {
@@ -33,7 +33,9 @@ const AddLoan = () => {
     try {
       const res = await fetch("http://localhost:3000/add-loan", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+         "Authorization": `Bearer ${token}`,
+         },
         body: JSON.stringify(payload),
       });
 

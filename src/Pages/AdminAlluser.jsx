@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Authcontext } from "../ContextApi/AuthContext";
 
 const Users = () => {
-  const {user}=useContext(Authcontext);
+  const {user,token}=useContext(Authcontext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +51,7 @@ const Users = () => {
       if (actionType === "approve") {
         await fetch(`http://localhost:3000/update-role/${id}`, {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" ,"Authorization": `Bearer ${token}`,},
           body: JSON.stringify({ role: roleValue, status: "active" }),
         });
 

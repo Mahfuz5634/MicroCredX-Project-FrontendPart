@@ -9,7 +9,7 @@ const ManageLoans = () => {
   const [editing, setEditing] = useState(null);
   const [load, setLoad] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const { user } = useContext(Authcontext);
+  const { user,token } = useContext(Authcontext);
 
   useEffect(() => {
     if (!user?.email) return;
@@ -21,7 +21,11 @@ const ManageLoans = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/delete-loan/${id}`);
+      await axios.delete(`http://localhost:3000/delete-loan/${id}`,{
+        headers:{
+        "Authorization": `Bearer ${token}`,
+      }
+      });
       toast.success("Deleted successfully");
       setLoad((p) => !p);
     } catch {
@@ -47,7 +51,7 @@ const ManageLoans = () => {
     try {
       await fetch(`http://localhost:3000/update-loan/${editing._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}`},
         body: JSON.stringify(updated),
       });
 

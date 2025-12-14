@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Authcontext } from "../ContextApi/AuthContext";
 
 const ApprovedLoans = () => {
   const [apps, setApps] = useState([]);
   const [selected, setSelected] = useState(null);
+  const {token}=useContext(Authcontext);
 
   useEffect(() => {
-    fetch("http://localhost:3000/get-Approved-loans")
+    fetch("http://localhost:3000/get-Approved-loans",{
+      headers:{
+        "Authorization": `Bearer ${token}`,
+      }
+    })
       .then((res) => res.json())
       .then((data) => setApps(data))
       .catch(console.error);

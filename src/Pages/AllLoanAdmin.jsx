@@ -9,7 +9,7 @@ const ManageLoans = () => {
   const [loans, setLoans] = useState([]);
   const [editing, setEditing] = useState(null);
   const [load, setLoad] = useState(false);
-  const { user } = useContext(Authcontext);
+  const { user ,token} = useContext(Authcontext);
 
   // load all loans (admin)
   useEffect(() => {
@@ -95,7 +95,7 @@ const ManageLoans = () => {
     try {
       await fetch(`http://localhost:3000/update-adminloan/${editing._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}`, },
         body: JSON.stringify(updated),
       });
 

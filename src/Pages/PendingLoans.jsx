@@ -1,45 +1,61 @@
 // src/pages/Dashboard/PendingLoans.jsx
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Authcontext } from "../ContextApi/AuthContext";
 
 const PendingLoans = () => {
   const [apps, setApps] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [load,setload]=useState(false);
-
+  const [load, setload] = useState(false);
+  const { token } = useContext(Authcontext);
 
   //approved
   const handleApprove = async (id) => {
-  try {
-    await axios.patch(
-      `http://localhost:3000/loan-status/${id}`,
-      { status: "Approved" }
-    );
-    setload(!load)
-    toast.success("Approved successfully")
-  } catch (error) {
-    console.error(error);
-  }
-};
+    try {
+      await axios.patch(
+        `http://localhost:3000/loan-status/${id}`,
+        { status: "Approved" },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setload(!load);
+      toast.success("Approved successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-//cancel
-const handleCancel = async (id) => {
-  try {
-    await axios.patch(
-      `http://localhost:3000/loan-status/${id}`,
-      { status: "Cancelled" }
-    );
-     setload(!load)
-     toast.success("Reject successfully")
-  } catch (error) {
-    console.error(error);
-  }
-};
-
+  //cancel
+  const handleCancel = async (id) => {
+    try {
+      await axios.patch(
+        `http://localhost:3000/loan-status/${id}`,
+        {
+          status: "Cancelled",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setload(!load);
+      toast.success("Reject successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    fetch("http://localhost:3000/get-allloans")
+    fetch("http://localhost:3000/get-allloans", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         const pendingOnly = data.filter((item) => item.status === "Pending");
@@ -56,7 +72,8 @@ const handleCancel = async (id) => {
           Pending Applications
         </h2>
         <p className="text-xs text-slate-500 mt-1">
-          Review and take action on all loan applications that are waiting for approval.
+          Review and take action on all loan applications that are waiting for
+          approval.
         </p>
       </div>
 
@@ -82,9 +99,7 @@ const handleCancel = async (id) => {
                   <div className="font-medium text-slate-800">
                     {app.firstName} {app.lastName}
                   </div>
-                  <div className="text-[11px] text-slate-500">
-                    {app.email}
-                  </div>
+                  <div className="text-[11px] text-slate-500">{app.email}</div>
                   <div className="text-[11px] text-slate-400">
                     {app.incomeSource}
                   </div>
@@ -104,10 +119,16 @@ const handleCancel = async (id) => {
                 </td>
 
                 <td className="text-right space-x-1">
-                  <button  onClick={()=>handleApprove(app._id)} className="btn btn-xs btn-success text-white">
+                  <button
+                    onClick={() => handleApprove(app._id)}
+                    className="btn btn-xs btn-success text-white"
+                  >
                     Approve
                   </button>
-                  <button onClick={()=>handleCancel(app._id)} className="btn btn-xs btn-error text-white">
+                  <button
+                    onClick={() => handleCancel(app._id)}
+                    className="btn btn-xs btn-error text-white"
+                  >
                     Reject
                   </button>
                   <button
@@ -143,9 +164,7 @@ const handleCancel = async (id) => {
                 <h3 className="text-sm font-semibold text-slate-900">
                   Loan Application Details
                 </h3>
-                <p className="text-[11px] text-slate-500">
-                  ID: {selected._id}
-                </p>
+                <p className="text-[11px] text-slate-500">ID: {selected._id}</p>
               </div>
               <button
                 onClick={() => setSelected(null)}
@@ -165,9 +184,7 @@ const handleCancel = async (id) => {
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Email</p>
-                  <p className="font-medium text-slate-800">
-                    {selected.email}
-                  </p>
+                  <p className="font-medium text-slate-800">{selected.email}</p>
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Contact</p>
@@ -182,17 +199,13 @@ const handleCancel = async (id) => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Income Source
-                  </p>
+                  <p className="text-[11px] text-slate-500">Income Source</p>
                   <p className="font-medium text-slate-800">
                     {selected.incomeSource}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Monthly Income
-                  </p>
+                  <p className="text-[11px] text-slate-500">Monthly Income</p>
                   <p className="font-medium text-slate-800">
                     ৳{selected.monthlyIncome}
                   </p>
@@ -213,9 +226,7 @@ const handleCancel = async (id) => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Interest Rate
-                  </p>
+                  <p className="text-[11px] text-slate-500">Interest Rate</p>
                   <p className="font-medium text-slate-800">
                     {selected.interestRate}%
                   </p>
@@ -259,10 +270,16 @@ const handleCancel = async (id) => {
               </div>
 
               <div className="space-x-2 text-right">
-                <button  onClick={()=>handleApprove(selected._id)} className="btn btn-xs btn-success text-white">
+                <button
+                  onClick={() => handleApprove(selected._id)}
+                  className="btn btn-xs btn-success text-white"
+                >
                   Approve
                 </button>
-                <button onClick={()=>handleCancel(selected._id)} className="btn btn-xs btn-error text-white">
+                <button
+                  onClick={() => handleCancel(selected._id)}
+                  className="btn btn-xs btn-error text-white"
+                >
                   Reject
                 </button>
                 <button
