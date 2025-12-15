@@ -1,27 +1,37 @@
-import { Link, NavLink } from "react-router"; 
-import { useContext } from "react";
+import { Link, NavLink } from "react-router";
+import { useContext, useEffect, useState } from "react";
 import logo from "../assets/logo2.jpg";
 import { Authcontext } from "../ContextApi/AuthContext";
 import toast from "react-hot-toast";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
-
 const Navbar = () => {
-  const { user, LogOutFunc,loading } = useContext(Authcontext) || {};
+  const { user, LogOutFunc, loading } = useContext(Authcontext) || {};
 
-   if (loading) {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    const html = document.querySelector("html");
+    html.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const handleTheme = (checked) => {
+    setTheme(checked ? "dark" : "light");
+  };
+
+  if (loading) {
     return (
       <div className="min-h-[60px] flex items-center justify-center">
         <span className="loading loading-ring loading-lg"></span>
       </div>
     );
   }
-  
 
-  const logout=()=>{
+  const logout = () => {
     LogOutFunc();
-    toast.success('Log out succesfully');
-  }
+    toast.success("Log out succesfully");
+  };
 
   const navLinks = (
     <>
@@ -136,9 +146,8 @@ const Navbar = () => {
   );
 
   return (
-    <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
-      <div className="navbar container mx-auto bg-white max-w-7xl">
-      
+    <div className="bg-white  border-b border-gray-200 shadow-sm sticky top-0 z-50">
+      <div className="navbar container mx-auto  max-w-7xl">
         <div className="navbar-start">
           <div className="dropdown">
             <label tabIndex={0} className="btn btn-ghost lg:hidden">
@@ -236,6 +245,55 @@ const Navbar = () => {
 
         {/* right side */}
         <div className="navbar-end gap-2">
+          <label className="toggle text-base-content">
+            <input
+              onChange={(e) => handleTheme(e.target.checked)}
+              defaultChecked={localStorage.getItem("theme") === "dark"}
+              type="checkbox"
+              value="synthwave"
+              className="theme-controller"
+            />
+
+            <svg
+              aria-label="sun"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <g
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="2"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2"></path>
+                <path d="M12 20v2"></path>
+                <path d="m4.93 4.93 1.41 1.41"></path>
+                <path d="m17.66 17.66 1.41 1.41"></path>
+                <path d="M2 12h2"></path>
+                <path d="M20 12h2"></path>
+                <path d="m6.34 17.66-1.41 1.41"></path>
+                <path d="m19.07 4.93-1.41 1.41"></path>
+              </g>
+            </svg>
+
+            <svg
+              aria-label="moon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <g
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeWidth="2"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+              </g>
+            </svg>
+          </label>
           {!user ? (
             <>
               <Link to="/login" className="btn btn-ghost hidden md:inline-flex">
@@ -281,29 +339,36 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-           
             <div className="flex items-center gap-2">
-               <span className="md:text-2xl"><RiArrowDropDownLine /></span>
-             
+              <span className="md:text-2xl">
+                <RiArrowDropDownLine />
+              </span>
+
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                
                   <div className="w-10 rounded-full ring ring-green-500 ring-offset-2 ring-offset-slate-950">
-                    {user?.photoURL ?<> <div className="flex">
-                      <img src={user.photoURL} alt={user.displayName} className="w-10 h-10 object-cover rounded-full" />
-                      
-                       
-                    </div>
-                      
-                    
-                    </>  : (
+                    {user?.photoURL ? (
+                      <>
+                        {" "}
+                        <div className="flex">
+                          <img
+                            src={user.photoURL}
+                            alt={user.displayName}
+                            className="w-10 h-10 object-cover rounded-full"
+                          />
+                        </div>
+                      </>
+                    ) : (
                       <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center rounded-full text-white font-semibold text-sm">
                         {user?.displayName?.charAt(0)?.toUpperCase() || "U"}
                       </div>
                     )}
                   </div>
                 </label>
-                <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow-lg bg-white rounded-box w-52 menu dropdown-content border border-gray-200">
+                <ul
+                  tabIndex={0}
+                  className="mt-3 z-[1] p-2 shadow-lg bg-white rounded-box w-52 menu dropdown-content border border-gray-200"
+                >
                   <li className="menu-title text-sm font-semibold text-gray-700 px-4 py-2 border-b border-gray-100">
                     {user?.displayName || "User"}
                   </li>
@@ -311,11 +376,25 @@ const Navbar = () => {
                     <NavLink
                       to="/dashboard"
                       className={({ isActive }) =>
-                        `flex items-center gap-2 ${isActive ? "text-green-700 bg-green-50 font-semibold" : ""}`
+                        `flex items-center gap-2 ${
+                          isActive
+                            ? "text-green-700 bg-green-50 font-semibold"
+                            : ""
+                        }`
                       }
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h7v7H4zM13 6h7v4h-7zM13 12h7v6h-7zM4 15h7v3H4z" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h7v7H4zM13 6h7v4h-7zM13 12h7v6h-7zM4 15h7v3H4z"
+                        />
                       </svg>
                       Dashboard
                     </NavLink>
@@ -325,8 +404,18 @@ const Navbar = () => {
                       onClick={logout}
                       className="flex items-center gap-2 w-full text-left text-red-600 hover:bg-red-50 font-medium"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 16l4-4m0 0l-4-4m4 4H7"
+                        />
                       </svg>
                       Logout
                     </button>
