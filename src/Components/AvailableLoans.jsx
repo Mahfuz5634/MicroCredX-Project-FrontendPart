@@ -16,7 +16,7 @@ const AvailableLoans = () => {
 
   return (
     <ScrollReveal>
-      <section className="mt-12 container mx-auto">
+      <section className="mt-12 container mx-auto px-4">
         <div className="flex items-end justify-between mb-6">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-emerald-600">

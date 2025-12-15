@@ -5,7 +5,7 @@ import ScrollReveal from "./ScrollReveal";
 const WhyChoose = () => (
   <ScrollReveal>
     <section className="mt-16">
-    <div className="container mx-auto">
+    <div className="container mx-auto px-4">
       <div className="grid gap-10 md:grid-cols-2 items-center">
         {/* left content */}
         <div>

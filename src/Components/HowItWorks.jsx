@@ -22,7 +22,7 @@ const steps = [
 const HowItWorks = () => {
   return (
    <ScrollReveal>
-     <section className="mt-16 container mx-auto">
+     <section className="mt-16 container mx-auto px-4">
       <div className="text-center mb-8">
         <p className="text-xs uppercase tracking-[0.25em] text-emerald-600">
           How It Works
