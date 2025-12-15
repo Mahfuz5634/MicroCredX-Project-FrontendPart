@@ -22,6 +22,7 @@ import Users from "../Pages/AdminAlluser";
 import AdminLoanApplications from "../Pages/AdminLoanApplication";
 import PaymentSuccess from "../Pages/PaymentSucces";
 import PaymentCancel from "../Pages/PaymentCancel";
+import NotFound from "../Pages/NotFound";
 
 
 export const router = createBrowserRouter([
@@ -88,5 +89,9 @@ export const router = createBrowserRouter([
     {
       path:"payment-cancel",
       element:<PaymentCancel></PaymentCancel>
+    },
+    {
+      path:'*',
+      Component:NotFound,
     }
 ]);
