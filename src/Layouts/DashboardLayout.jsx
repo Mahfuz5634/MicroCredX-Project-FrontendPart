@@ -17,14 +17,14 @@ const DashboardLayout = () => {
   const [pending, setpending] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:3000/pending-loans-count")
+    fetch("https://microcred-server.vercel.app/pending-loans-count")
       .then((res) => res.json())
       .then((data) => setpending(data.count));
   }, []);
 
   useEffect(() => {
     if (!user?.email) return;
-    fetch(`http://localhost:3000/user-role/${user.email}`)
+    fetch(`https://microcred-server.vercel.app/user-role/${user.email}`)
       .then((res) => res.json())
       .then((data) => setRole(data.role || "borrower"))
       .catch(() => setRole("borrower"));
@@ -219,14 +219,13 @@ const DashboardLayout = () => {
               <line x1="2" x2="22" y1="10" y2="10" />
             </svg>
           </span>
-        <di className="font-semibold">  My Loans</di>
+          <di className="font-semibold"> My Loans</di>
         </NavLink>
       </li>
     </>
   );
 
   return (
-    
     <div className="min-h-screen bg-slate-50 flex">
       <title>MicroCredX-Dashboard</title>
       <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col">

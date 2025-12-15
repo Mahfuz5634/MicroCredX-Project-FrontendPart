@@ -4,13 +4,13 @@ import { Authcontext } from "../ContextApi/AuthContext";
 const ApprovedLoans = () => {
   const [apps, setApps] = useState([]);
   const [selected, setSelected] = useState(null);
-  const {token}=useContext(Authcontext);
+  const { token } = useContext(Authcontext);
 
   useEffect(() => {
-    fetch("http://localhost:3000/get-Approved-loans",{
-      headers:{
-        "Authorization": `Bearer ${token}`,
-      }
+    fetch("https://microcred-server.vercel.app/get-Approved-loans", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => res.json())
       .then((data) => setApps(data))
@@ -51,9 +51,7 @@ const ApprovedLoans = () => {
                   <div className="font-medium text-slate-800">
                     {app.firstName} {app.lastName}
                   </div>
-                  <div className="text-[11px] text-slate-500">
-                    {app.email}
-                  </div>
+                  <div className="text-[11px] text-slate-500">{app.email}</div>
                   <div className="text-[11px] text-slate-400">
                     {app.incomeSource}
                   </div>
@@ -69,7 +67,9 @@ const ApprovedLoans = () => {
                 </td>
 
                 <td className="text-[11px] text-slate-500">
-                  {new Date(app.updatedAt || app.createdAt).toLocaleDateString()}
+                  {new Date(
+                    app.updatedAt || app.createdAt
+                  ).toLocaleDateString()}
                 </td>
 
                 <td className="text-right">
@@ -106,9 +106,7 @@ const ApprovedLoans = () => {
                 <h3 className="text-sm font-semibold text-slate-900">
                   Approved Loan Details
                 </h3>
-                <p className="text-[11px] text-slate-500">
-                  ID: {selected._id}
-                </p>
+                <p className="text-[11px] text-slate-500">ID: {selected._id}</p>
               </div>
               <button
                 onClick={() => setSelected(null)}
@@ -128,9 +126,7 @@ const ApprovedLoans = () => {
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Email</p>
-                  <p className="font-medium text-slate-800">
-                    {selected.email}
-                  </p>
+                  <p className="font-medium text-slate-800">{selected.email}</p>
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Contact</p>
@@ -145,17 +141,13 @@ const ApprovedLoans = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Income Source
-                  </p>
+                  <p className="text-[11px] text-slate-500">Income Source</p>
                   <p className="font-medium text-slate-800">
                     {selected.incomeSource}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Monthly Income
-                  </p>
+                  <p className="text-[11px] text-slate-500">Monthly Income</p>
                   <p className="font-medium text-slate-800">
                     ৳{selected.monthlyIncome}
                   </p>
@@ -176,9 +168,7 @@ const ApprovedLoans = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Interest Rate
-                  </p>
+                  <p className="text-[11px] text-slate-500">Interest Rate</p>
                   <p className="font-medium text-slate-800">
                     {selected.interestRate}%
                   </p>

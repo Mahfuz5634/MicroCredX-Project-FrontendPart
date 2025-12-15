@@ -14,7 +14,7 @@ const PendingLoans = () => {
   const handleApprove = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:3000/loan-status/${id}`,
+        `https://microcred-server.vercel.app/loan-status/${id}`,
         { status: "Approved" },
         {
           headers: {
@@ -33,7 +33,7 @@ const PendingLoans = () => {
   const handleCancel = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:3000/loan-status/${id}`,
+        `https://microcred-server.vercel.app/loan-status/${id}`,
         {
           status: "Cancelled",
         },
@@ -51,7 +51,7 @@ const PendingLoans = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:3000/get-allloans", {
+    fetch("https://microcred-server.vercel.app/get-allloans", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -9,7 +9,9 @@ const PaymentSuccess = () => {
   useEffect(() => {
     if (sessionId) {
       axios
-        .patch(`http://localhost:3000/payment-success?session_id=${sessionId}`)
+        .patch(
+          `https://microcred-server.vercel.app/payment-success?session_id=${sessionId}`
+        )
 
         .then((res) => {
           console.log(res);
@@ -29,8 +31,8 @@ const PaymentSuccess = () => {
             Payment successful
           </h1>
           <p className="mt-2 text-xs text-slate-500">
-            Your application fee has been received. Your loan application will be
-            processed shortly.
+            Your application fee has been received. Your loan application will
+            be processed shortly.
           </p>
 
           {sessionId && (

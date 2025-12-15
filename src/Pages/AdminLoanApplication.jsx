@@ -18,11 +18,14 @@ const AdminLoanApplications = () => {
 
         const idToken = await user.getIdToken();
 
-        const res = await axios.get("http://localhost:3000/all-adminloan", {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
+        const res = await axios.get(
+          "https://microcred-server.vercel.app/all-adminloan",
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          }
+        );
 
         setApps(res.data);
       } catch (err) {

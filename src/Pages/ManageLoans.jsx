@@ -9,11 +9,11 @@ const ManageLoans = () => {
   const [editing, setEditing] = useState(null);
   const [load, setLoad] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const { user,token } = useContext(Authcontext);
+  const { user, token } = useContext(Authcontext);
 
   useEffect(() => {
     if (!user?.email) return;
-    fetch(`http://localhost:3000/create-loan?email=${user.email}`)
+    fetch(`https://microcred-server.vercel.app/create-loan?email=${user.email}`)
       .then((res) => res.json())
       .then((data) => setLoans(data))
       .catch(console.error);
@@ -21,11 +21,14 @@ const ManageLoans = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/delete-loan/${id}`,{
-        headers:{
-        "Authorization": `Bearer ${token}`,
-      }
-      });
+      await axios.delete(
+        `https://microcred-server.vercel.app/delete-loan/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       toast.success("Deleted successfully");
       setLoad((p) => !p);
     } catch {
@@ -49,11 +52,17 @@ const ManageLoans = () => {
     };
 
     try {
-      await fetch(`http://localhost:3000/update-loan/${editing._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}`},
-        body: JSON.stringify(updated),
-      });
+      await fetch(
+        `https://microcred-server.vercel.app/update-loan/${editing._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updated),
+        }
+      );
 
       setLoans((prev) =>
         prev.map((loan) => (loan._id === editing._id ? updated : loan))
@@ -80,9 +89,7 @@ const ManageLoans = () => {
       <title>MicroCredX-ManageLoans</title>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-slate-900">
-            Manage Loans
-          </h2>
+          <h2 className="text-xl font-semibold text-slate-900">Manage Loans</h2>
           <p className="text-xs text-slate-500 mt-1">
             View, edit, or remove loan products you have created.
           </p>
@@ -91,9 +98,7 @@ const ManageLoans = () => {
         <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
           <div className="text-[11px] text-slate-500">
             Total Loans:{" "}
-            <span className="font-semibold text-slate-800">
-              {loans.length}
-            </span>
+            <span className="font-semibold text-slate-800">{loans.length}</span>
           </div>
           <div className="relative">
             <input

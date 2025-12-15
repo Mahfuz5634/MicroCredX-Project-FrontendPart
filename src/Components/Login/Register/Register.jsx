@@ -9,9 +9,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
-
 const Register = () => {
-   const navigate = useNavigate();  
+  const navigate = useNavigate();
   const { SignInFunc, auth } = useContext(Authcontext);
   const provider = new GoogleAuthProvider();
 
@@ -111,11 +110,11 @@ const Register = () => {
         })
           .then(() => {
             toast.success("Register Account Successfully");
-            navigate('/')
-            axios.post("http://localhost:3000/save-user", {
+            navigate("/");
+            axios.post("https://microcred-server.vercel.app/save-user", {
               name: name,
               email: email,
-              role:UserRole,
+              role: UserRole,
             });
 
             e.target.reset();
@@ -176,16 +175,15 @@ const Register = () => {
   const Googlesignin = () => {
     signInWithPopup(auth, provider)
       .then(async (result) => {
-      const user = result.user;
-       await axios.post("http://localhost:3000/save-user", {
-        name: user.displayName,
-        email: user.email,
-        role: "borrower",  
-      });
-       toast.success("Register Account Successfully");
-       navigate('/')
-
-    })
+        const user = result.user;
+        await axios.post("https://microcred-server.vercel.app/save-user", {
+          name: user.displayName,
+          email: user.email,
+          role: "borrower",
+        });
+        toast.success("Register Account Successfully");
+        navigate("/");
+      })
       .catch((error) => {
         toast.error("Something went wrong: " + error.message);
       });

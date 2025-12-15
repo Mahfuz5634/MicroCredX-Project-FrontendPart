@@ -6,20 +6,20 @@ import axios from "axios";
 const MyLoans = () => {
   const [apps, setApps] = useState([]);
   const [selected, setSelected] = useState(null);
-  const { user,token} = useContext(Authcontext);
+  const { user, token } = useContext(Authcontext);
   const [load, setLoad] = useState(false);
 
   useEffect(() => {
     if (!user?.email) return;
-    fetch(`http://localhost:3000/get-loan?email=${user.email}`,{
-      headers:{
-        "Authorization": `Bearer ${token}`,
-      }
+    fetch(`https://microcred-server.vercel.app/get-loan?email=${user.email}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => res.json())
       .then((data) => setApps(data))
       .catch(console.error);
-  }, [user?.email, load,token]);
+  }, [user?.email, load, token]);
 
   const deleteItems = (id) => {
     Swal.fire({
@@ -42,7 +42,7 @@ const MyLoans = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:3000/delete-loan/${id}`, {
+        fetch(`https://microcred-server.vercel.app/delete-loan/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
@@ -67,19 +67,18 @@ const MyLoans = () => {
     });
   };
 
-  
   const handlePayment = async (appId) => {
     if (!user?.email) return;
 
     const paymentInfo = {
-      cost: Number(10),     
-      loanId: appId,       
+      cost: Number(10),
+      loanId: appId,
       senderEmail: user.email,
     };
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/create-checkout-session",
+        "https://microcred-server.vercel.app/create-checkout-session",
         paymentInfo
       );
       window.location.href = res.data.url;
@@ -102,9 +101,7 @@ const MyLoans = () => {
         </div>
         <div className="text-[11px] text-slate-500">
           Total applications:{" "}
-          <span className="font-semibold text-slate-800">
-            {apps.length}
-          </span>
+          <span className="font-semibold text-slate-800">{apps.length}</span>
         </div>
       </div>
 
@@ -180,8 +177,7 @@ const MyLoans = () => {
                       </button>
                     )}
 
-                    {app.applicationFeeStatus?.toLowerCase() ===
-                      "unpaid" && (
+                    {app.applicationFeeStatus?.toLowerCase() === "unpaid" && (
                       <button
                         onClick={() => handlePayment(app._id)}
                         className="btn btn-xs btn-success bg-green-500 text-white"
@@ -190,12 +186,8 @@ const MyLoans = () => {
                       </button>
                     )}
 
-                    {app.applicationFeeStatus?.toLowerCase() ===
-                      "paid" && (
-                      <button
-                        className="btn btn-xs btn-outline"
-                        disabled
-                      >
+                    {app.applicationFeeStatus?.toLowerCase() === "paid" && (
+                      <button className="btn btn-xs btn-outline" disabled>
                         Paid
                       </button>
                     )}
@@ -280,8 +272,7 @@ const MyLoans = () => {
                   </button>
                 )}
 
-                {app.applicationFeeStatus?.toLowerCase() ===
-                  "unpaid" && (
+                {app.applicationFeeStatus?.toLowerCase() === "unpaid" && (
                   <button
                     onClick={() => handlePayment(app._id)}
                     className="btn btn-xs btn-success bg-green-500 text-white mt-1"
@@ -291,10 +282,7 @@ const MyLoans = () => {
                 )}
 
                 {app.applicationFeeStatus?.toLowerCase() === "paid" && (
-                  <button
-                    className="btn btn-xs btn-outline mt-1"
-                    disabled
-                  >
+                  <button className="btn btn-xs btn-outline mt-1" disabled>
                     Paid
                   </button>
                 )}
@@ -319,9 +307,7 @@ const MyLoans = () => {
                 <h3 className="text-sm font-semibold text-slate-900">
                   Loan Application Details
                 </h3>
-                <p className="text-[11px] text-slate-500">
-                  ID: {selected._id}
-                </p>
+                <p className="text-[11px] text-slate-500">ID: {selected._id}</p>
               </div>
               <button
                 onClick={() => setSelected(null)}
@@ -341,9 +327,7 @@ const MyLoans = () => {
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Email</p>
-                  <p className="font-medium text-slate-800">
-                    {selected.email}
-                  </p>
+                  <p className="font-medium text-slate-800">{selected.email}</p>
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Contact</p>
@@ -358,17 +342,13 @@ const MyLoans = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Income Source
-                  </p>
+                  <p className="text-[11px] text-slate-500">Income Source</p>
                   <p className="font-medium text-slate-800">
                     {selected.incomeSource}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Monthly Income
-                  </p>
+                  <p className="text-[11px] text-slate-500">Monthly Income</p>
                   <p className="font-medium text-slate-800">
                     ৳{selected.monthlyIncome}
                   </p>
@@ -389,9 +369,7 @@ const MyLoans = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Interest Rate
-                  </p>
+                  <p className="text-[11px] text-slate-500">Interest Rate</p>
                   <p className="font-medium text-slate-800">
                     {selected.interestRate}%
                   </p>
@@ -457,8 +435,7 @@ const MyLoans = () => {
                     Cancel
                   </button>
                 )}
-                {selected.applicationFeeStatus?.toLowerCase() ===
-                  "unpaid" && (
+                {selected.applicationFeeStatus?.toLowerCase() === "unpaid" && (
                   <button
                     onClick={() => handlePayment(selected._id)}
                     className="btn btn-xs btn-success bg-green-500 text-white"

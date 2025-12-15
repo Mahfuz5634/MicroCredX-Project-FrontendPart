@@ -3,7 +3,7 @@ import { Authcontext } from "../ContextApi/AuthContext";
 import toast from "react-hot-toast";
 
 const AddLoan = () => {
-  const { user,token } = useContext(Authcontext);
+  const { user, token } = useContext(Authcontext);
   const today = new Date().toLocaleDateString();
 
   const handleSubmit = async (e) => {
@@ -31,17 +31,18 @@ const AddLoan = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/add-loan", {
+      const res = await fetch("https://microcred-server.vercel.app/add-loan", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
-         "Authorization": `Bearer ${token}`,
-         },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(payload),
       });
 
       const data = await res.json();
       console.log("Saved loan:", data);
-      toast.success("Successfully added")
+      toast.success("Successfully added");
       form.reset();
     } catch (err) {
       console.error(err);
@@ -61,7 +62,8 @@ const AddLoan = () => {
           </p>
         </div>
         <span className="hidden sm:inline-flex items-center rounded-full bg-slate-50 px-3 py-1 text-[11px] text-slate-500 border border-slate-100">
-          Today: <span className="ml-1 font-medium text-slate-700">{today}</span>
+          Today:{" "}
+          <span className="ml-1 font-medium text-slate-700">{today}</span>
         </span>
       </div>
 

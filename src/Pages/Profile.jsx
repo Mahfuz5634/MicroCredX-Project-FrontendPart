@@ -8,7 +8,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!user?.email) return;
-    fetch(`http://localhost:3000/user-role/${user.email}`)
+    fetch(`https://microcred-server.vercel.app/user-role/${user.email}`)
       .then((res) => res.json())
       .then((data) => setRole(data.role || "borrower"))
       .catch(() => setRole("borrower"));
@@ -145,12 +145,8 @@ const Profile = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">
-                    Default language
-                  </p>
-                  <p className="font-medium text-slate-900">
-                    English (US)
-                  </p>
+                  <p className="text-[11px] text-slate-500">Default language</p>
+                  <p className="font-medium text-slate-900">English (US)</p>
                 </div>
               </div>
             </div>
@@ -158,9 +154,7 @@ const Profile = () => {
 
           {activeTab === "security" && (
             <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-4 text-xs">
-              <h3 className="text-sm font-semibold text-slate-900">
-                Security
-              </h3>
+              <h3 className="text-sm font-semibold text-slate-900">Security</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between border rounded-lg px-3 py-2 border-slate-100 bg-slate-50/70">
                   <div>
@@ -171,9 +165,7 @@ const Profile = () => {
                       Last changed: not set
                     </p>
                   </div>
-                  <button className="btn btn-outline btn-xs">
-                    Update
-                  </button>
+                  <button className="btn btn-outline btn-xs">Update</button>
                 </div>
                 <div className="flex items-center justify-between border rounded-lg px-3 py-2 border-slate-100">
                   <div>
@@ -184,9 +176,7 @@ const Profile = () => {
                       Add extra protection to your account.
                     </p>
                   </div>
-                  <button className="btn btn-outline btn-xs">
-                    Enable
-                  </button>
+                  <button className="btn btn-outline btn-xs">Enable</button>
                 </div>
                 <div className="flex items-center justify-between border rounded-lg px-3 py-2 border-slate-100">
                   <div>

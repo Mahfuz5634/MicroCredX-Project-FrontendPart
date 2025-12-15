@@ -9,12 +9,12 @@ const ManageLoans = () => {
   const [loans, setLoans] = useState([]);
   const [editing, setEditing] = useState(null);
   const [load, setLoad] = useState(false);
-  const { user ,token} = useContext(Authcontext);
+  const { user, token } = useContext(Authcontext);
 
   // load all loans (admin)
   useEffect(() => {
     if (!user?.email) return;
-    fetch("http://localhost:3000/all-loan")
+    fetch("https://microcred-server.vercel.app/all-loan")
       .then((res) => res.json())
       .then((data) => setLoans(data))
       .catch(console.error);
@@ -42,7 +42,7 @@ const ManageLoans = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:3000/delete-loan/${id}`, {
+        fetch(`https://microcred-server.vercel.app/delete-loan/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
@@ -93,11 +93,17 @@ const ManageLoans = () => {
     };
 
     try {
-      await fetch(`http://localhost:3000/update-adminloan/${editing._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}`, },
-        body: JSON.stringify(updated),
-      });
+      await fetch(
+        `https://microcred-server.vercel.app/update-adminloan/${editing._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updated),
+        }
+      );
 
       setLoans((prev) =>
         prev.map((loan) => (loan._id === editing._id ? updated : loan))
@@ -124,9 +130,7 @@ const ManageLoans = () => {
         </div>
         <div className="text-[11px] text-slate-500">
           Total Loans:{" "}
-          <span className="font-semibold text-slate-800">
-            {loans.length}
-          </span>
+          <span className="font-semibold text-slate-800">{loans.length}</span>
         </div>
       </div>
 

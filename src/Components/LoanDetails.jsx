@@ -10,16 +10,16 @@ const LoanDetails = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const [role, setrole] = useState("");
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:3000/user-role/${user.email}`)
+    fetch(`https://microcred-server.vercel.app/user-role/${user.email}`)
       .then((res) => res.json())
       .then((data) => setrole(data.role));
   }, [user.email]);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/loan-details/${id}`)
+    fetch(`https://microcred-server.vercel.app/loan-details/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setTimeout(() => {
@@ -33,13 +33,12 @@ const LoanDetails = () => {
       });
   }, [id]);
 
-
-   const handleStartApplication = () => {
+  const handleStartApplication = () => {
     navigate("/loan-application", {
       state: {
         email: user?.email || "",
         loanTitle: loan.title,
-        interestRate: loan.interestRate, 
+        interestRate: loan.interestRate,
       },
     });
   };
@@ -235,7 +234,8 @@ const LoanDetails = () => {
                 </div>
 
                 <div className="mt-5 flex flex-col gap-2">
-                  <button onClick={handleStartApplication}
+                  <button
+                    onClick={handleStartApplication}
                     className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-[11px] font-medium shadow-sm transition-colors
     ${
       role === "borrower"

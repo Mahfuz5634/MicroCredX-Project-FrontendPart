@@ -18,7 +18,7 @@ const AllLoans = () => {
   const pageSize = 9;
 
   useEffect(() => {
-    fetch("http://localhost:3000/home-allloans")
+    fetch("https://microcred-server.vercel.app/home-allloans")
       .then((res) => res.json())
       .then((result) => {
         setTimeout(() => {

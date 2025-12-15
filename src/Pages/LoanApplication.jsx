@@ -4,11 +4,10 @@ import toast from "react-hot-toast";
 import { useLocation } from "react-router";
 
 const LoanApplicationForm = () => {
-
-   const location = useLocation();
+  const location = useLocation();
 
   const { email, loanTitle, interestRate } = location.state || {};
- 
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -27,13 +26,13 @@ const LoanApplicationForm = () => {
       reason: form.reason.value,
       address: form.address.value,
       extraNotes: form.extraNotes.value,
-      status: "Pending", 
-      applicationFeeStatus: "unpaid", 
+      status: "Pending",
+      applicationFeeStatus: "unpaid",
     };
-   axios.post("http://localhost:3000/save-loan",data)
-   toast.success("Application submitted")
-   e.target.reset();
-};
+    axios.post("https://microcred-server.vercel.app/save-loan", data);
+    toast.success("Application submitted");
+    e.target.reset();
+  };
 
   return (
     <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-10">
@@ -47,13 +46,13 @@ const LoanApplicationForm = () => {
             Apply for this loan
           </h1>
           <p className="mt-2 text-xs md:text-sm text-slate-500">
-            Review the auto‑filled details and complete the form to submit your loan request.
+            Review the auto‑filled details and complete the form to submit your
+            loan request.
           </p>
         </div>
 
         <div className="rounded-3xl border border-slate-100 bg-white px-5 py-6 md:px-8 md:py-8 shadow-md">
           <form onSubmit={handleSubmit} className="space-y-6">
-            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">
@@ -95,7 +94,6 @@ const LoanApplicationForm = () => {
 
             <hr className="border-slate-100" />
 
-          
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">
@@ -123,7 +121,6 @@ const LoanApplicationForm = () => {
               </div>
             </div>
 
-         
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">
@@ -151,7 +148,6 @@ const LoanApplicationForm = () => {
               </div>
             </div>
 
-          
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">
@@ -180,7 +176,6 @@ const LoanApplicationForm = () => {
               </div>
             </div>
 
-         
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">
@@ -223,7 +218,6 @@ const LoanApplicationForm = () => {
               />
             </div>
 
-          
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1">
                 Extra Notes (Optional)
@@ -236,11 +230,9 @@ const LoanApplicationForm = () => {
               />
             </div>
 
-          
             <input type="hidden" name="status" value="Pending" />
             <input type="hidden" name="applicationFeeStatus" value="unpaid" />
 
-       
             <div className="flex justify-end">
               <button
                 type="submit"

@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Authcontext } from "../ContextApi/AuthContext";
 
 const Users = () => {
-  const {user,token}=useContext(Authcontext);
+  const { user, token } = useContext(Authcontext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,38 +20,44 @@ const Users = () => {
   const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
-  const fetchUsers = async () => {
-    try {
-      const idToken = await user.getIdToken();
+    const fetchUsers = async () => {
+      try {
+        const idToken = await user.getIdToken();
 
-      const res = await fetch("http://localhost:3000/all-user", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${idToken}`, 
-        },
-      });
+        const res = await fetch(
+          "https://microcred-server.vercel.app/all-user",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${idToken}`,
+            },
+          }
+        );
 
-      const data = await res.json();
-      setUsers(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+        const data = await res.json();
+        setUsers(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchUsers();
-}, [user]);
+    fetchUsers();
+  }, [user]);
   const handleChangeRole = async () => {
     if (!roleModalUser) return;
     const id = roleModalUser._id;
 
     try {
       if (actionType === "approve") {
-        await fetch(`http://localhost:3000/update-role/${id}`, {
+        await fetch(`https://microcred-server.vercel.app/update-role/${id}`, {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" ,"Authorization": `Bearer ${token}`,},
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ role: roleValue, status: "active" }),
         });
 
@@ -61,7 +67,7 @@ const Users = () => {
           )
         );
       } else {
-        await fetch(`http://localhost:3000/update-role/${id}`, {
+        await fetch(`https://microcred-server.vercel.app/update-role/${id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -101,7 +107,7 @@ const Users = () => {
     if (!ok) return;
 
     try {
-      await fetch(`http://localhost:3000/users/${id}`, {
+      await fetch(`https://microcred-server.vercel.app/users/${id}`, {
         method: "DELETE",
       });
       setUsers((prev) => prev.filter((u) => u._id !== id));
@@ -153,9 +159,7 @@ const Users = () => {
         <div className="flex flex-col sm:flex-row gap-2 sm:items-center text-xs">
           <div className="text-[11px] text-slate-500">
             Total users:{" "}
-            <span className="font-semibold text-slate-800">
-              {users.length}
-            </span>
+            <span className="font-semibold text-slate-800">{users.length}</span>
           </div>
 
           <div className="flex gap-2">
@@ -228,9 +232,7 @@ const Users = () => {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-[11px] font-semibold text-slate-600">
-                            {(u.name || u.email || "?")
-                              .charAt(0)
-                              .toUpperCase()}
+                            {(u.name || u.email || "?").charAt(0).toUpperCase()}
                           </div>
                         )}
                       </div>
@@ -335,9 +337,7 @@ const Users = () => {
 
             <div className="px-4 py-3 space-y-3 text-xs">
               <div>
-                <p className="text-[11px] text-slate-500 mb-1">
-                  Current role
-                </p>
+                <p className="text-[11px] text-slate-500 mb-1">Current role</p>
                 <p className="font-medium text-slate-800 capitalize">
                   {roleModalUser.role}
                 </p>
