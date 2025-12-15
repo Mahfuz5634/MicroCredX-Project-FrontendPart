@@ -88,8 +88,8 @@ const CustomerFeedback = () => {
 
   return (
     <ScrollReveal>
-      <section className="mt-16 mb-10">
-        <div className="text-center mb-8">
+      <section className="mt-16 mb-10 ">
+        <div className="text-center mb-8 container mx-auto px-2">
           <p className="text-xs uppercase tracking-[0.25em] text-slate-500">
             Customer feedback
           </p>
