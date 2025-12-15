@@ -72,13 +72,13 @@ const CustomerFeedback = () => {
     mobileFirst: true,
     responsive: [
       {
-        breakpoint: 640, // <= 640px -> mobile
+        breakpoint: 640, //mobile
         settings: {
           slidesToShow: 1,
         },
       },
       {
-        breakpoint: 1024, // <= 1024px -> tablet
+        breakpoint: 1024, //tablet
         settings: {
           slidesToShow: 2,
         },
