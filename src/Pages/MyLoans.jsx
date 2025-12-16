@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Authcontext } from "../ContextApi/AuthContext";
 import Swal from "sweetalert2";
 import axios from "axios";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 const MyLoans = () => {
   const [apps, setApps] = useState([]);
@@ -11,11 +12,14 @@ const MyLoans = () => {
 
   useEffect(() => {
     if (!user?.email) return;
-    fetch(`https://microcred-server.vercel.app/get-loan?email=${user.email}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    fetch(
+      `https://microcred-server.vercel.app/get-loan?email=${user.email}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => setApps(data))
       .catch(console.error);
@@ -36,9 +40,9 @@ const MyLoans = () => {
         title: "text-slate-900 text-base font-semibold",
         htmlContainer: "text-slate-500 text-sm",
         confirmButton:
-          "btn btn-sm bg-rose-600 hover:bg-rose-700 text-white border-0 px-4",
+          "inline-flex justify-center items-center px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium mr-2",
         cancelButton:
-          "btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-700 border-0 px-4 ml-2",
+          "inline-flex justify-center items-center px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium",
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -56,6 +60,7 @@ const MyLoans = () => {
               showConfirmButton: false,
               timer: 1500,
               timerProgressBar: true,
+              buttonsStyling: false,
               customClass: {
                 popup: "rounded-2xl shadow-md",
                 title: "text-slate-900 text-sm font-semibold",
@@ -64,7 +69,7 @@ const MyLoans = () => {
             });
           });
       }
-    });
+    }); 
   };
 
   const handlePayment = async (appId) => {
@@ -84,12 +89,27 @@ const MyLoans = () => {
       window.location.href = res.data.url;
     } catch (error) {
       console.error("Payment error:", error.response?.data || error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Payment failed",
+        text: "Unable to start the payment session. Please try again.",
+        buttonsStyling: false,
+        confirmButtonText: "Close",
+        customClass: {
+          popup: "rounded-2xl shadow-xl",
+          title: "text-slate-900 text-base font-semibold",
+          htmlContainer: "text-slate-600 text-sm",
+          confirmButton:
+            "inline-flex justify-center items-center px-4 py-2 rounded-lg bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-300",
+        },
+      }); 
     }
   };
+
   return (
-    <div className="space-y-4">
+    <div className="min-h-screen bg-slate-50 px-3 py-4 sm:px-6 lg:px-8 space-y-4">
       <title>MicroCredX-MyLoans</title>
-      {/* header */}
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
           <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
@@ -105,27 +125,26 @@ const MyLoans = () => {
         </div>
       </div>
 
-      {/* table (desktop) */}
       <div className="hidden md:block">
         <div className="overflow-x-auto bg-white rounded-xl border border-slate-100 shadow-sm">
-          <table className="table table-sm">
+          <table className="min-w-full text-xs">
             <thead>
-              <tr className="text-xs text-slate-500 bg-slate-50/80">
-                <th className="font-medium">Loan ID</th>
-                <th className="font-medium">Loan Info</th>
-                <th className="font-medium">Amount</th>
-                <th className="font-medium">Status</th>
-                <th className="font-medium text-right">Actions</th>
+              <tr className="text-[11px] text-slate-500 bg-slate-50/80 border-b border-slate-100">
+                <th className="px-4 py-2 text-left font-medium">Loan ID</th>
+                <th className="px-4 py-2 text-left font-medium">Loan Info</th>
+                <th className="px-4 py-2 text-left font-medium">Amount</th>
+                <th className="px-4 py-2 text-left font-medium">Status</th>
+                <th className="px-4 py-2 text-right font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {apps.map((app) => (
-                <tr key={app._id} className="text-xs hover:bg-slate-50/60">
-                  <td className="font-mono text-[11px] text-slate-500">
+                <tr key={app._id} className="hover:bg-slate-50/60">
+                  <td className="px-4 py-3 font-mono text-[11px] text-slate-500">
                     {app._id.slice(-6)}
                   </td>
 
-                  <td>
+                  <td className="px-4 py-3">
                     <div className="font-medium text-slate-800">
                       {app.loanTitle}
                     </div>
@@ -134,7 +153,7 @@ const MyLoans = () => {
                     </div>
                   </td>
 
-                  <td>
+                  <td className="px-4 py-3">
                     <div className="font-semibold text-slate-800">
                       ৳{app.loanAmount}
                     </div>
@@ -143,10 +162,9 @@ const MyLoans = () => {
                     </div>
                   </td>
 
-                  <td>
+                  <td className="px-4 py-3">
                     <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
-                      ${
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
                         app.status === "Pending"
                           ? "bg-amber-50 text-amber-700"
                           : app.status === "Approved"
@@ -160,10 +178,10 @@ const MyLoans = () => {
                     </span>
                   </td>
 
-                  <td className="text-right space-x-1">
+                  <td className="px-4 py-3 text-right space-x-1">
                     <button
                       onClick={() => setSelected(app)}
-                      className="btn btn-xs btn-outline"
+                      className="inline-flex items-center rounded-lg border border-slate-200 px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
                     >
                       View
                     </button>
@@ -171,7 +189,7 @@ const MyLoans = () => {
                     {app.status === "Pending" && (
                       <button
                         onClick={() => deleteItems(app._id)}
-                        className="btn btn-xs btn-error bg-red-500 text-white"
+                        className="inline-flex items-center rounded-lg bg-rose-500 hover:bg-rose-600 px-2.5 py-1 text-[11px] font-medium text-white"
                       >
                         Cancel
                       </button>
@@ -180,14 +198,17 @@ const MyLoans = () => {
                     {app.applicationFeeStatus?.toLowerCase() === "unpaid" && (
                       <button
                         onClick={() => handlePayment(app._id)}
-                        className="btn btn-xs btn-success bg-green-500 text-white"
+                        className="inline-flex items-center rounded-lg bg-emerald-500 hover:bg-emerald-600 px-2.5 py-1 text-[11px] font-medium text-white"
                       >
                         Pay
                       </button>
                     )}
 
                     {app.applicationFeeStatus?.toLowerCase() === "paid" && (
-                      <button className="btn btn-xs btn-outline" disabled>
+                      <button
+                        className="inline-flex items-center rounded-lg border border-slate-200 px-2.5 py-1 text-[11px] font-medium text-slate-400"
+                        disabled
+                      >
                         Paid
                       </button>
                     )}
@@ -210,7 +231,6 @@ const MyLoans = () => {
         </div>
       </div>
 
-      {/* mobile cards */}
       <div className="grid gap-3 md:hidden">
         {apps.map((app) => (
           <div
@@ -230,8 +250,7 @@ const MyLoans = () => {
                 </p>
               </div>
               <span
-                className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
-                ${
+                className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
                   app.status === "Pending"
                     ? "bg-amber-50 text-amber-700"
                     : app.status === "Approved"
@@ -282,7 +301,10 @@ const MyLoans = () => {
                 )}
 
                 {app.applicationFeeStatus?.toLowerCase() === "paid" && (
-                  <button className="btn btn-xs btn-outline mt-1" disabled>
+                  <button
+                    className="btn btn-xs btn-outline mt-1"
+                    disabled
+                  >
                     Paid
                   </button>
                 )}
@@ -298,7 +320,6 @@ const MyLoans = () => {
         )}
       </div>
 
-      {/* modal */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-3">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -307,7 +328,9 @@ const MyLoans = () => {
                 <h3 className="text-sm font-semibold text-slate-900">
                   Loan Application Details
                 </h3>
-                <p className="text-[11px] text-slate-500">ID: {selected._id}</p>
+                <p className="text-[11px] text-slate-500">
+                  ID: {selected._id}
+                </p>
               </div>
               <button
                 onClick={() => setSelected(null)}
@@ -327,7 +350,9 @@ const MyLoans = () => {
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Email</p>
-                  <p className="font-medium text-slate-800">{selected.email}</p>
+                  <p className="font-medium text-slate-800">
+                    {selected.email}
+                  </p>
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Contact</p>
@@ -391,16 +416,17 @@ const MyLoans = () => {
               {selected.extraNotes && (
                 <div className="pt-2 border-t border-dashed border-slate-100">
                   <p className="text-[11px] text-slate-500">Extra Notes</p>
-                  <p className="text-slate-800">{selected.extraNotes}</p>
+                  <p className="text-slate-800">
+                    {selected.extraNotes}
+                  </p>
                 </div>
               )}
             </div>
 
-            <div className="px-4 py-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sticky bottom-0 bg-white rounded-b-xl">
-              <div className="space-x-1 text-[11px]">
+            <div className="px-4 py-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sticky bottom-0 bg-white rounded-b-xl text-xs">
+              <div className="space-x-1">
                 <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 font-medium
-                  ${
+                  className={`inline-flex items-center rounded-full px-2 py-0.5 font-medium ${
                     selected.status === "Pending"
                       ? "bg-amber-50 text-amber-700"
                       : selected.status === "Approved"
@@ -417,7 +443,7 @@ const MyLoans = () => {
                     selected.applicationFeeStatus?.toLowerCase() === "paid"
                       ? "bg-emerald-50 text-emerald-700"
                       : "bg-slate-50 text-slate-600"
-                  } text-[11px]`}
+                  }`}
                 >
                   Fee:{" "}
                   {selected.applicationFeeStatus
@@ -430,7 +456,7 @@ const MyLoans = () => {
                 {selected.status === "Pending" && (
                   <button
                     onClick={() => deleteItems(selected._id)}
-                    className="btn btn-xs btn-error text-white bg-red-600"
+                    className="btn btn-xs bg-rose-500 hover:bg-rose-600 text-white"
                   >
                     Cancel
                   </button>
@@ -438,7 +464,7 @@ const MyLoans = () => {
                 {selected.applicationFeeStatus?.toLowerCase() === "unpaid" && (
                   <button
                     onClick={() => handlePayment(selected._id)}
-                    className="btn btn-xs btn-success bg-green-500 text-white"
+                    className="btn btn-xs bg-emerald-500 hover:bg-emerald-600 text-white"
                   >
                     Pay Fee
                   </button>

@@ -1,4 +1,3 @@
-// src/pages/Dashboard/AdminLoanApplications.jsx
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -15,7 +14,6 @@ const AdminLoanApplications = () => {
     const fetchLoans = async () => {
       try {
         if (!user) return;
-
         const idToken = await user.getIdToken();
 
         const res = await axios.get(
@@ -56,14 +54,15 @@ const AdminLoanApplications = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="min-h-screen bg-slate-50 px-3 py-4 sm:px-6 lg:px-8 space-y-4">
       <title>MicroCredX-LoanApplication</title>
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-xl font-semibold text-slate-900">
+          <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
             Loan Applications
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs sm:text-[13px] text-slate-500 mt-1">
             Admin can review all loan applications and manage their status.
           </p>
         </div>
@@ -71,7 +70,9 @@ const AdminLoanApplications = () => {
         <div className="flex items-center gap-3 text-xs">
           <div className="hidden sm:block text-slate-500">
             Total:{" "}
-            <span className="font-semibold text-slate-800">{apps.length}</span>
+            <span className="font-semibold text-slate-800">
+              {apps.length}
+            </span>
           </div>
 
           <div className="flex items-center gap-1">
@@ -90,19 +91,87 @@ const AdminLoanApplications = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-xl border border-slate-100 shadow-sm">
-        <table className="table table-sm">
+      {/* mobile cards */}
+      <div className="space-y-2 md:hidden">
+        {loading && (
+          <div className="bg-white rounded-xl border border-slate-100 shadow-sm text-center py-6 text-xs text-slate-400">
+            Loading applications...
+          </div>
+        )}
+
+        {!loading &&
+          filteredApps.map((app) => (
+            <div
+              key={app._id}
+              className="bg-white rounded-xl border border-slate-100 shadow-sm p-3 space-y-2"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="text-[11px] text-slate-400">
+                    ID: {app._id.slice(-6)}
+                  </p>
+                  <p className="text-sm font-semibold text-slate-900">
+                    {app.loanTitle}
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    {app.firstName} {app.lastName} • {app.email}
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    {app.reason}
+                  </p>
+                </div>
+                <span
+                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${getStatusBadgeClass(
+                    app.status
+                  )}`}
+                >
+                  {app.status}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between text-xs">
+                <div>
+                  <p className="text-[11px] text-slate-500">Amount</p>
+                  <p className="font-semibold text-slate-900">
+                    ৳{app.loanAmount}
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    Income ৳{app.monthlyIncome}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelected(app)}
+                  className="inline-flex items-center rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          ))}
+
+        {!loading && filteredApps.length === 0 && (
+          <div className="bg-white rounded-xl border border-dashed border-slate-200 p-4 text-center text-xs text-slate-400">
+            No applications for this filter.
+          </div>
+        )}
+      </div>
+
+      {/* table desktop */}
+      <div className="hidden md:block overflow-x-auto bg-white rounded-xl border border-slate-100 shadow-sm">
+        <table className="min-w-full text-xs">
           <thead>
-            <tr className="text-xs text-slate-500 bg-slate-50/80">
-              <th>Loan ID</th>
-              <th>User</th>
-              <th>Loan Category</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th className="text-right">Actions</th>
+            <tr className="text-[11px] text-slate-500 bg-slate-50/80 border-b border-slate-100">
+              <th className="px-4 py-2 text-left font-medium">Loan ID</th>
+              <th className="px-4 py-2 text-left font-medium">User</th>
+              <th className="px-4 py-2 text-left font-medium">
+                Loan Category
+              </th>
+              <th className="px-4 py-2 text-left font-medium">Amount</th>
+              <th className="px-4 py-2 text-left font-medium">Status</th>
+              <th className="px-4 py-2 text-right font-medium">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-100">
             {loading && (
               <tr>
                 <td
@@ -116,12 +185,12 @@ const AdminLoanApplications = () => {
 
             {!loading &&
               filteredApps.map((app) => (
-                <tr key={app._id} className="text-xs hover:bg-slate-50/60">
-                  <td className="font-mono text-[11px] text-slate-500">
+                <tr key={app._id} className="hover:bg-slate-50/60">
+                  <td className="px-4 py-3 font-mono text-[11px] text-slate-500">
                     {app._id.slice(-6)}
                   </td>
 
-                  <td>
+                  <td className="px-4 py-3">
                     <div className="font-medium text-slate-800">
                       {app.firstName} {app.lastName}
                     </div>
@@ -130,7 +199,7 @@ const AdminLoanApplications = () => {
                     </div>
                   </td>
 
-                  <td>
+                  <td className="px-4 py-3">
                     <div className="font-medium text-slate-800">
                       {app.loanTitle}
                     </div>
@@ -139,7 +208,7 @@ const AdminLoanApplications = () => {
                     </div>
                   </td>
 
-                  <td>
+                  <td className="px-4 py-3">
                     <div className="font-semibold text-slate-800">
                       ৳{app.loanAmount}
                     </div>
@@ -148,7 +217,7 @@ const AdminLoanApplications = () => {
                     </div>
                   </td>
 
-                  <td>
+                  <td className="px-4 py-3">
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${getStatusBadgeClass(
                         app.status
@@ -158,10 +227,10 @@ const AdminLoanApplications = () => {
                     </span>
                   </td>
 
-                  <td className="text-right">
+                  <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => setSelected(app)}
-                      className="btn btn-xs btn-outline"
+                      className="inline-flex items-center rounded-lg border border-slate-200 px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
                     >
                       View
                     </button>
@@ -191,7 +260,9 @@ const AdminLoanApplications = () => {
                 <h3 className="text-sm font-semibold text-slate-900">
                   Loan Application Details
                 </h3>
-                <p className="text-[11px] text-slate-500">ID: {selected._id}</p>
+                <p className="text-[11px] text-slate-500">
+                  ID: {selected._id}
+                </p>
               </div>
               <button
                 onClick={() => setSelected(null)}
@@ -211,7 +282,9 @@ const AdminLoanApplications = () => {
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Email</p>
-                  <p className="font-medium text-slate-900">{selected.email}</p>
+                  <p className="font-medium text-slate-900">
+                    {selected.email}
+                  </p>
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Contact</p>
@@ -229,7 +302,6 @@ const AdminLoanApplications = () => {
                 </div>
               </section>
 
-              {/* income + loan */}
               <section className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-dashed border-slate-100">
                 <div>
                   <p className="text-[11px] text-slate-500">Income Source</p>
@@ -250,7 +322,9 @@ const AdminLoanApplications = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-500">Requested Amount</p>
+                  <p className="text-[11px] text-slate-500">
+                    Requested Amount
+                  </p>
                   <p className="font-medium text-slate-900">
                     ৳{selected.loanAmount}
                   </p>
@@ -269,7 +343,6 @@ const AdminLoanApplications = () => {
                 </div>
               </section>
 
-              {/* address + notes */}
               <section className="pt-3 border-t border-dashed border-slate-100 space-y-2">
                 <div>
                   <p className="text-[11px] text-slate-500">Address</p>
@@ -286,7 +359,7 @@ const AdminLoanApplications = () => {
               </section>
             </div>
 
-            <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div className="px-4 py-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
               <div className="space-x-1">
                 <span
                   className={`inline-flex items-center rounded-full px-2 py-0.5 font-medium ${getStatusBadgeClass(
@@ -302,7 +375,7 @@ const AdminLoanApplications = () => {
                       : "bg-slate-50 text-slate-700"
                   }`}
                 >
-                  Fee: {selected.applicationFeeStatus}
+                  Fee: {selected.applicationFeeStatus || "Unknown"}
                 </span>
               </div>
               <button

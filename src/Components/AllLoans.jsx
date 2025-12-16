@@ -34,7 +34,7 @@ const AllLoans = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <ScaleLoader color="#2cc786" />
       </div>
     );
@@ -54,47 +54,46 @@ const AllLoans = () => {
 
   return (
     <motion.section
-      initial={{ scale: 0 }}
-      animate={{ scale: 1, transition: { duration: 0.4 } }}
-      className="mt-2"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0, transition: { duration: 0.4 } }}
+      className="mt-2 min-h-screen "
     >
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-10 sm:py-12 lg:py-14">
         <title>MicroCredX-All Loans</title>
 
         <div className="text-left">
-          <p className="text-xs uppercase tracking-[0.2em] text-emerald-600">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-emerald-600">
             All Loan Products
           </p>
           <h2 className="mt-3 text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
             Explore all available loan options
           </h2>
-          <p className="mt-2 max-w-2xl text-sm text-slate-500">
+          <p className="mt-2 max-w-2xl text-xs sm:text-sm text-slate-500">
             Compare limits, interest rates, and tenures to find the right
             microloan for your needs.
           </p>
         </div>
 
         {loans.length === 0 ? (
-          <div className="mt-10 text-sm text-slate-500">
+          <div className="mt-10 flex items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white/60 px-4 py-10 text-xs sm:text-sm text-slate-500">
             No loans available right now. Please check back later.
           </div>
         ) : (
           <>
-            {/* cards */}
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {paginatedLoans.map((loan) => {
                 const imgSrc = getLoanImage(loan);
 
                 return (
                   <article
                     key={loan.id || loan._id}
-                    className="group flex flex-col rounded-2xl border border-white/60 bg-white/80 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-200 hover:shadow-lg"
+                    className="group flex flex-col rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-200 hover:shadow-lg"
                   >
                     {imgSrc && (
                       <div className="mb-4 overflow-hidden rounded-xl border border-emerald-50 bg-emerald-50/60">
                         <img
                           src={imgSrc}
-                          alt={loan.name || "Loan image"}
+                          alt={loan.name || loan.title || "Loan image"}
                           className="h-32 w-full object-cover transition-transform duration-300 group-hover:scale-105"
                           loading="lazy"
                         />
@@ -106,23 +105,28 @@ const AllLoans = () => {
                         {loan.category || "Microloan"}
                       </span>
                       <span className="text-[11px] text-slate-400">
-                        #{loan.code || loan.id}
+                        #{loan.code || loan.id || String(loan._id).slice(-6)}
                       </span>
                     </div>
 
-                    <h3 className="text-sm font-semibold text-slate-900">
+                    <h3 className="text-sm font-semibold text-slate-900 line-clamp-1">
                       {loan.title || "Loan Plan"}
                     </h3>
                     <p className="mt-2 text-xs leading-relaxed text-slate-500 line-clamp-2">
-                      {loan.description ||
+                      {loan.shortDesc ||
+                        loan.description ||
                         "Flexible microloan designed to support your daily and long‑term needs."}
                     </p>
 
                     <div className="mt-4 grid grid-cols-3 gap-3 text-xs">
                       <div>
-                        <p className="text-[11px] text-slate-400">Max amount</p>
+                        <p className="text-[11px] text-slate-400">
+                          Max amount
+                        </p>
                         <p className="mt-1 font-semibold text-slate-900">
-                          {loan.maxAmount ? `৳${loan.maxAmount}` : "On request"}
+                          {loan.maxLimit || loan.maxAmount
+                            ? `৳${loan.maxLimit || loan.maxAmount}`
+                            : "On request"}
                         </p>
                       </div>
                       <div>
@@ -145,10 +149,27 @@ const AllLoans = () => {
                       </div>
                     </div>
 
+                    {loan.emiPlans && loan.emiPlans.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {loan.emiPlans.slice(0, 3).map((emi, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center rounded-full bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-600"
+                          >
+                            {emi}
+                          </span>
+                        ))}
+                        {loan.emiPlans.length > 3 && (
+                          <span className="text-[10px] text-slate-400">
+                            +{loan.emiPlans.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     <div className="mt-5 flex items-center justify-between gap-3">
                       <Link
                         to={`/loan-details/${loan._id}`}
-                        type="button"
                         className="inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-700"
                       >
                         View details
@@ -161,6 +182,7 @@ const AllLoans = () => {
                 );
               })}
             </div>
+
             <div className="mt-8 flex justify-center">
               <div className="join">
                 {Array.from({ length: totalPages }, (_, idx) => {
@@ -168,7 +190,7 @@ const AllLoans = () => {
                   return (
                     <button
                       key={page}
-                      className={`join-item btn ${
+                      className={`join-item btn btn-xs sm:btn-sm ${
                         currentPage === page ? "btn-active" : ""
                       }`}
                       onClick={() => handlePageChange(page)}

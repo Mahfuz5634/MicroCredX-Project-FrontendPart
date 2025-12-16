@@ -1,8 +1,9 @@
-// src/pages/Dashboard/PendingLoans.jsx
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Authcontext } from "../ContextApi/AuthContext";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css"; 
 
 const PendingLoans = () => {
   const [apps, setApps] = useState([]);
@@ -10,8 +11,29 @@ const PendingLoans = () => {
   const [load, setload] = useState(false);
   const { token } = useContext(Authcontext);
 
-  //approved
   const handleApprove = async (id) => {
+    const result = await Swal.fire({
+      title: "Approve this loan?",
+      text: "The borrower will be notified and the loan will move to active.",
+      icon: "question",
+      showCancelButton: true,
+      buttonsStyling: false,
+      showCloseButton: true,
+      confirmButtonText: "Yes, approve",
+      cancelButtonText: "Cancel",
+      customClass: {
+        popup: "rounded-2xl shadow-xl",
+        title: "text-slate-900 text-base font-semibold",
+        htmlContainer: "text-slate-500 text-sm",
+        confirmButton:
+          "inline-flex justify-center items-center px-4 py-2 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-300 mr-2",
+        cancelButton:
+          "inline-flex justify-center items-center px-4 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-sm font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200",
+      },
+    }); 
+
+    if (!result.isConfirmed) return;
+
     try {
       await axios.patch(
         `https://microcred-server.vercel.app/loan-status/${id}`,
@@ -26,11 +48,33 @@ const PendingLoans = () => {
       toast.success("Approved successfully");
     } catch (error) {
       console.error(error);
+      toast.error("Something went wrong");
     }
   };
 
-  //cancel
   const handleCancel = async (id) => {
+    const result = await Swal.fire({
+      title: "Reject this loan?",
+      text: "This application will be marked as cancelled.",
+      icon: "warning",
+      showCancelButton: true,
+      buttonsStyling: false,
+      showCloseButton: true,
+      confirmButtonText: "Yes, reject",
+      cancelButtonText: "Keep pending",
+      customClass: {
+        popup: "rounded-2xl shadow-xl",
+        title: "text-slate-900 text-base font-semibold",
+        htmlContainer: "text-slate-500 text-sm",
+        confirmButton:
+          "inline-flex justify-center items-center px-4 py-2 rounded-lg bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-300 mr-2",
+        cancelButton:
+          "inline-flex justify-center items-center px-4 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-sm font-medium hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200",
+      },
+    }); 
+
+    if (!result.isConfirmed) return;
+
     try {
       await axios.patch(
         `https://microcred-server.vercel.app/loan-status/${id}`,
@@ -44,9 +88,10 @@ const PendingLoans = () => {
         }
       );
       setload(!load);
-      toast.success("Reject successfully");
+      toast.success("Rejected successfully");
     } catch (error) {
       console.error(error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -62,50 +107,128 @@ const PendingLoans = () => {
         setApps(pendingOnly);
       })
       .catch(console.error);
-  }, [load]);
+  }, [load, token]);
 
   return (
-    <div className="space-y-4">
+    <div className="min-h-screen bg-slate-50 px-3 py-4 sm:px-6 lg:px-8 space-y-4">
       <title>MicroCredX-PendingLoans</title>
-      <div>
-        <h2 className="text-xl font-semibold text-slate-900">
-          Pending Applications
-        </h2>
-        <p className="text-xs text-slate-500 mt-1">
-          Review and take action on all loan applications that are waiting for
-          approval.
-        </p>
+
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
+            Pending Applications
+          </h2>
+          <p className="text-xs sm:text-[13px] text-slate-500 mt-1">
+            Review and take action on all loan applications that are waiting for
+            approval.
+          </p>
+        </div>
+        <div className="text-[11px] text-slate-500">
+          Total pending:{" "}
+          <span className="font-semibold text-slate-800">{apps.length}</span>
+        </div>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-xl border border-slate-100 shadow-sm">
-        <table className="table table-sm">
+      <div className="space-y-2 md:hidden">
+        {apps.map((app) => (
+          <div
+            key={app._id}
+            className="bg-white rounded-xl border border-slate-100 shadow-sm p-3 space-y-2"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="font-mono text-[11px] text-slate-400">
+                  #{app._id.slice(-6)}
+                </p>
+                <p className="font-medium text-slate-900 text-sm">
+                  {app.firstName} {app.lastName}
+                </p>
+                <p className="text-[11px] text-slate-500 break-all">
+                  {app.email}
+                </p>
+                <p className="text-[11px] text-slate-400">
+                  {app.incomeSource}
+                </p>
+              </div>
+              <div className="text-right space-y-1">
+                <p className="font-semibold text-slate-900">
+                  ৳{app.loanAmount}
+                </p>
+                <p className="text-[11px] text-slate-500">
+                  Interest {app.interestRate}%
+                </p>
+                <p className="text-[11px] text-slate-400">
+                  {new Date(app.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium bg-amber-50 text-amber-700">
+                Pending
+              </span>
+              <div className="flex gap-2 w-full sm:w-auto justify-end">
+                <button
+                  onClick={() => handleApprove(app._id)}
+                  className="flex-1 inline-flex justify-center items-center rounded-lg bg-emerald-500 hover:bg-emerald-600 px-3 py-1.5 text-[11px] font-medium text-white"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleCancel(app._id)}
+                  className="flex-1 inline-flex justify-center items-center rounded-lg bg-rose-500 hover:bg-rose-600 px-3 py-1.5 text-[11px] font-medium text-white"
+                >
+                  Reject
+                </button>
+                <button
+                  onClick={() => setSelected(app)}
+                  className="flex-1 inline-flex justify-center items-center rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {apps.length === 0 && (
+          <div className="text-center py-6 text-xs text-slate-400 bg-white rounded-xl border border-slate-100 shadow-sm">
+            No pending applications.
+          </div>
+        )}
+      </div>
+
+      <div className="hidden md:block overflow-x-auto bg-white rounded-xl border border-slate-100 shadow-sm">
+        <table className="min-w-full text-xs">
           <thead>
-            <tr className="text-xs text-slate-500 bg-slate-50/80">
-              <th>Loan ID</th>
-              <th>Borrower</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th className="text-right">Actions</th>
+            <tr className="text-[11px] text-slate-500 bg-slate-50/80 border-b border-slate-100">
+              <th className="px-4 py-2 text-left font-medium">Loan ID</th>
+              <th className="px-4 py-2 text-left font-medium">Borrower</th>
+              <th className="px-4 py-2 text-left font-medium">Amount</th>
+              <th className="px-4 py-2 text-left font-medium">Date</th>
+              <th className="px-4 py-2 text-right font-medium">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-100">
             {apps.map((app) => (
-              <tr key={app._id} className="text-xs hover:bg-slate-50/60">
-                <td className="font-mono text-[11px] text-slate-500">
+              <tr key={app._id} className="hover:bg-slate-50/60">
+                <td className="px-4 py-3 font-mono text-[11px] text-slate-500">
                   {app._id.slice(-6)}
                 </td>
 
-                <td>
+                <td className="px-4 py-3">
                   <div className="font-medium text-slate-800">
                     {app.firstName} {app.lastName}
                   </div>
-                  <div className="text-[11px] text-slate-500">{app.email}</div>
+                  <div className="text-[11px] text-slate-500">
+                    {app.email}
+                  </div>
                   <div className="text-[11px] text-slate-400">
                     {app.incomeSource}
                   </div>
                 </td>
 
-                <td>
+                <td className="px-4 py-3">
                   <div className="font-semibold text-slate-800">
                     ৳{app.loanAmount}
                   </div>
@@ -114,26 +237,26 @@ const PendingLoans = () => {
                   </div>
                 </td>
 
-                <td className="text-[11px] text-slate-500">
+                <td className="px-4 py-3 text-[11px] text-slate-500">
                   {new Date(app.createdAt).toLocaleDateString()}
                 </td>
 
-                <td className="text-right space-x-1">
+                <td className="px-4 py-3 text-right space-x-1">
                   <button
                     onClick={() => handleApprove(app._id)}
-                    className="btn btn-xs btn-success text-white"
+                    className="inline-flex items-center rounded-lg bg-emerald-500 hover:bg-emerald-600 px-2.5 py-1 text-[11px] font-medium text-white"
                   >
                     Approve
                   </button>
                   <button
                     onClick={() => handleCancel(app._id)}
-                    className="btn btn-xs btn-error text-white"
+                    className="inline-flex items-center rounded-lg bg-rose-500 hover:bg-rose-600 px-2.5 py-1 text-[11px] font-medium text-white"
                   >
                     Reject
                   </button>
                   <button
                     onClick={() => setSelected(app)}
-                    className="btn btn-xs btn-outline"
+                    className="inline-flex items-center rounded-lg border border-slate-200 px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
                   >
                     View
                   </button>
@@ -155,7 +278,6 @@ const PendingLoans = () => {
         </table>
       </div>
 
-      {/* details modal */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-3">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -184,7 +306,9 @@ const PendingLoans = () => {
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Email</p>
-                  <p className="font-medium text-slate-800">{selected.email}</p>
+                  <p className="font-medium text-slate-800">
+                    {selected.email}
+                  </p>
                 </div>
                 <div>
                   <p className="text-[11px] text-slate-500">Contact</p>
@@ -272,13 +396,13 @@ const PendingLoans = () => {
               <div className="space-x-2 text-right">
                 <button
                   onClick={() => handleApprove(selected._id)}
-                  className="btn btn-xs btn-success text-white"
+                  className="btn btn-xs bg-emerald-500 hover:bg-emerald-600 text-white"
                 >
                   Approve
                 </button>
                 <button
                   onClick={() => handleCancel(selected._id)}
-                  className="btn btn-xs btn-error text-white"
+                  className="btn btn-xs bg-rose-500 hover:bg-rose-600 text-white"
                 >
                   Reject
                 </button>
