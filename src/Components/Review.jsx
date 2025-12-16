@@ -59,32 +59,35 @@ const feedbacks = [
 ];
 
 const CustomerFeedback = () => {
-  const settings = {
-    dots: true,
-    arrows: false,
-    infinite: true,
-    autoplay: true,
-    autoplaySpeed: 6500,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    pauseOnHover: true,
-    mobileFirst: true,
-    responsive: [
-      {
-        breakpoint: 640, //mobile
-        settings: {
-          slidesToShow: 1,
-        },
+ const settings = {
+  dots: true,
+  arrows: false,
+  infinite: true,
+  autoplay: true,
+  autoplaySpeed: 6500,
+  adaptiveHeight: true,
+  speed: 500,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  pauseOnHover: true,
+
+  responsive: [
+    {
+      breakpoint: 1024, // tablet & below
+      settings: {
+        slidesToShow: 2,
       },
-      {
-        breakpoint: 1024, //tablet
-        settings: {
-          slidesToShow: 2,
-        },
+    },
+    {
+      breakpoint: 640, // mobile
+      settings: {
+        slidesToShow: 1,
       },
-    ],
-  };
+    },
+  ],
+};
+
+
 
   return (
     <ScrollReveal>
