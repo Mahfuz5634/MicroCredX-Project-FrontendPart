@@ -24,7 +24,7 @@ const Overview = () => {
               Coming soon
             </span>
           </div>
-          <p className="mt-3 text-2xl font-semibold text-slate-900">0</p>
+          <p className="mt-3 text-2xl font-semibold text-slate-900">11</p>
           <p className="mt-1 text-[11px] text-slate-400">
             Will display how many loan products are active in the system.
           </p>
@@ -39,7 +39,7 @@ const Overview = () => {
               ⏳
             </span>
           </div>
-          <p className="mt-3 text-2xl font-semibold text-slate-900">0</p>
+          <p className="mt-3 text-2xl font-semibold text-slate-900">15</p>
           <p className="mt-1 text-[11px] text-slate-400">
             Will show how many applications are waiting for review and approval.
           </p>
@@ -54,7 +54,7 @@ const Overview = () => {
               ✓
             </span>
           </div>
-          <p className="mt-3 text-2xl font-semibold text-slate-900">0</p>
+          <p className="mt-3 text-2xl font-semibold text-slate-900">35</p>
           <p className="mt-1 text-[11px] text-slate-400">
             Will display how many applications have been approved and disbursed.
           </p>
@@ -69,7 +69,7 @@ const Overview = () => {
               ৳
             </span>
           </div>
-          <p className="mt-3 text-2xl font-semibold text-slate-900">৳0</p>
+          <p className="mt-3 text-2xl font-semibold text-slate-900">৳25000</p>
           <p className="mt-1 text-[11px] text-slate-400">
             Will summarize collected application fees across all loans.
           </p>
