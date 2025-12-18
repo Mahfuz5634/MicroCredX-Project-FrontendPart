@@ -85,7 +85,7 @@ const AdminLoanApplications = () => {
               <option value="All">All</option>
               <option value="Pending">Pending</option>
               <option value="Approved">Approved</option>
-              <option value="Rejected">Rejected</option>
+              <option value="Cancelled">Rejected</option>
             </select>
           </div>
         </div>
