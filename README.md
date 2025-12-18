@@ -6,12 +6,11 @@ LoanLink is a comprehensive web-based microloan management system designed to st
 
 ## 🌐 Live URL
 
-**Live Site:** [Your Live Site URL Here]
+**Live Site:** https://microcredx.vercel.app/
 
 ## 🔗 Repository Links
 
-- **Client Repository:** [Your Client Repo URL]
-- **Server Repository:** [Your Server Repo URL]
+- **Server Repository:**- https://github.com/Mahfuz5634/MicroCredX-Project-ServerPart
 
 ## 🎯 Project Purpose
 
