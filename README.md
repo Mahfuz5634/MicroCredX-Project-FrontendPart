@@ -102,7 +102,7 @@ The system addresses the challenge faced by microloan providers in managing loan
 - **Vercel/Netlify** - Frontend hosting
 - **Vercel/Railway/Render** - Backend hosting
 
-## 📦 NPM Packages
+## 📦 NPM Package
 
 ### Client Dependencies
 ```json
