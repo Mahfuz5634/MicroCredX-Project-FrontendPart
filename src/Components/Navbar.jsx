@@ -142,6 +142,41 @@ const Navbar = () => {
           </span>
         </NavLink>
       </li>
+      <li>
+  <NavLink
+    to="/faq"
+    className={({ isActive }) =>
+      isActive ? "text-green-700 font-semibold" : ""
+    }
+  >
+    <span className="flex items-center gap-1">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 18h.01M8.227 9.227a3 3 0 115.196 2.09c-.44.44-.923.777-1.25 1.217-.26.35-.423.768-.423 1.216v.25"
+        />
+        <circle
+          cx="12"
+          cy="12"
+          r="9"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      FAQ
+    </span>
+  </NavLink>
+</li>
+
     </>
   );
 

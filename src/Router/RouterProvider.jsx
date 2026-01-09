@@ -23,6 +23,7 @@ import AdminLoanApplications from "../Pages/AdminLoanApplication";
 import PaymentSuccess from "../Pages/PaymentSucces";
 import PaymentCancel from "../Pages/PaymentCancel";
 import NotFound from "../Pages/NotFound";
+import FAQ from "../Pages/Faq";
 
 
 export const router = createBrowserRouter([
@@ -61,6 +62,10 @@ export const router = createBrowserRouter([
       {
         path:'loan-application',
         Component:LoanApplicationForm
+      }
+      ,{
+          path:'/faq',
+          element:<FAQ></FAQ>
       }
     ]
   },
