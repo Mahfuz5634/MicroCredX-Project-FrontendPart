@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import ScaleLoader from "react-spinners/ScaleLoader";
@@ -17,6 +17,10 @@ const AllLoans = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("recent"); // "amount-asc" | "amount-desc" | "rate-asc" | "rate-desc"
+  const [quickFilter, setQuickFilter] = useState("none"); // "high-amount" | "low-rate" | "none"
+
   useEffect(() => {
     fetch("https://microcred-server.vercel.app/home-allloans")
       .then((res) => res.json())
@@ -32,17 +36,63 @@ const AllLoans = () => {
       });
   }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <ScaleLoader color="#2cc786" />
-      </div>
-    );
-  }
+  const filteredAndSortedLoans = useMemo(() => {
+    const term = search.trim().toLowerCase();
 
-  const totalPages = Math.ceil(loans.length / pageSize);
+    let filtered = loans.filter((loan) => {
+      if (!term) return true;
+      const title = (loan.title || "").toLowerCase();
+      const category = (loan.category || "").toLowerCase();
+      const desc = (loan.shortDesc || loan.description || "").toLowerCase();
+      return (
+        title.includes(term) || category.includes(term) || desc.includes(term)
+      );
+    });
 
-  const paginatedLoans = loans.slice(
+    if (quickFilter === "high-amount") {
+      filtered = filtered.filter((loan) => {
+        const amount = Number(loan.maxLimit || loan.maxAmount || 0);
+        return amount >= 50000;
+      });
+    } else if (quickFilter === "low-rate") {
+      filtered = filtered.filter((loan) => {
+        const rate = Number(loan.interestRate || 0);
+        return rate > 0 && rate <= 10;
+      });
+    }
+
+    if (sortBy === "amount-asc") {
+      filtered = filtered.slice().sort((a, b) => {
+        const av = Number(a.maxLimit || a.maxAmount || 0);
+        const bv = Number(b.maxLimit || b.maxAmount || 0);
+        return av - bv;
+      });
+    } else if (sortBy === "amount-desc") {
+      filtered = filtered.slice().sort((a, b) => {
+        const av = Number(a.maxLimit || a.maxAmount || 0);
+        const bv = Number(b.maxLimit || b.maxAmount || 0);
+        return bv - av;
+      });
+    } else if (sortBy === "rate-asc") {
+      filtered = filtered.slice().sort((a, b) => {
+        const av = Number(a.interestRate || 0);
+        const bv = Number(b.interestRate || 0);
+        return av - bv;
+      });
+    } else if (sortBy === "rate-desc") {
+      filtered = filtered.slice().sort((a, b) => {
+        const av = Number(a.interestRate || 0);
+        const bv = Number(b.interestRate || 0);
+        return bv - av;
+      });
+    }
+
+    return filtered;
+  }, [loans, search, sortBy, quickFilter]);
+
+  const totalPages = Math.ceil(filteredAndSortedLoans.length / pageSize);
+
+  const paginatedLoans = filteredAndSortedLoans.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -51,6 +101,29 @@ const AllLoans = () => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const toggleQuickFilter = (value) => {
+    setQuickFilter((prev) => (prev === value ? "none" : value));
+    setCurrentPage(1);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <ScaleLoader color="#2cc786" />
+      </div>
+    );
+  }
 
   return (
     <motion.section
@@ -74,9 +147,102 @@ const AllLoans = () => {
           </p>
         </div>
 
-        {loans.length === 0 ? (
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 sm:gap-3">
+            <div className="flex flex-wrap gap-2 text-[11px]">
+              <button
+                type="button"
+                onClick={() => toggleQuickFilter("high-amount")}
+                className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 ${
+                  quickFilter === "high-amount"
+                    ? "border-emerald-500 bg-emerald-50 text-emerald-800"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300"
+                }`}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                High amount (৳50k+)
+              </button>
+              <button
+                type="button"
+                onClick={() => toggleQuickFilter("low-rate")}
+                className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 ${
+                  quickFilter === "low-rate"
+                    ? "border-emerald-500 bg-emerald-50 text-emerald-800"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300"
+                }`}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Low interest (≤10% p.a.)
+              </button>
+            </div>
+            <span className="text-[11px] text-slate-500">
+              Showing {filteredAndSortedLoans.length} loan
+              {filteredAndSortedLoans.length !== 1 && "s"} after filters.
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end sm:gap-3 w-full sm:w-auto">
+            <div className="relative inline-flex items-center">
+              <span className="mr-2 hidden text-[11px] text-slate-500 sm:inline">
+                Sort
+              </span>
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={handleSortChange}
+                  className="appearance-none rounded-full border border-slate-200 bg-white pr-8 pl-3 py-2 text-[11px] sm:text-xs text-slate-800 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+                >
+                  <option value="recent">Recently added</option>
+                  <option value="amount-desc">Amount · high to low</option>
+                  <option value="amount-asc">Amount · low to high</option>
+                  <option value="rate-asc">Rate · low to high</option>
+                  <option value="rate-desc">Rate · high to low</option>
+                </select>
+                <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-slate-400">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3 w-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.25a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08z" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <div className="relative w-full sm:max-w-xs">
+              <input
+                type="text"
+                value={search}
+                onChange={handleSearchChange}
+                placeholder="Search by name, category, or description..."
+                className="w-full rounded-full border border-slate-200 bg-white px-3 py-2 pl-9 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+              <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m21 21-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"
+                  />
+                </svg>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {filteredAndSortedLoans.length === 0 ? (
           <div className="mt-10 flex items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white/60 px-4 py-10 text-xs sm:text-sm text-slate-500">
-            No loans available right now. Please check back later.
+            No loans match your search and filters. Try a different keyword or
+            reset sorting.
           </div>
         ) : (
           <>
@@ -120,9 +286,7 @@ const AllLoans = () => {
 
                     <div className="mt-4 grid grid-cols-3 gap-3 text-xs">
                       <div>
-                        <p className="text-[11px] text-slate-400">
-                          Max amount
-                        </p>
+                        <p className="text-[11px] text-slate-400">Max amount</p>
                         <p className="mt-1 font-semibold text-slate-900">
                           {loan.maxLimit || loan.maxAmount
                             ? `৳${loan.maxLimit || loan.maxAmount}`
