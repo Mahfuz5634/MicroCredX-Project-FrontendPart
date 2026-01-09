@@ -3,23 +3,22 @@ import { NavLink, Outlet } from "react-router";
 import { Authcontext } from "../ContextApi/AuthContext";
 import logo from "../assets/logo2.jpg";
 import { IoIosTime, IoMdAddCircleOutline, IoMdHome } from "react-icons/io";
-import { FcApproval } from "react-icons/fc";
 import { CgProfile } from "react-icons/cg";
 import { MdManageHistory } from "react-icons/md";
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
-import { FaUsers } from "react-icons/fa6";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaUsers, FaCheckCircle } from "react-icons/fa";
 
 const DashboardLayout = () => {
   const { user } = useContext(Authcontext);
   const [role, setRole] = useState("");
   const [open, setOpen] = useState(false);
-  const [pending, setpending] = useState(0);
+  const [pending, setPending] = useState(0);
 
   useEffect(() => {
     fetch("https://microcred-server.vercel.app/pending-loans-count")
       .then((res) => res.json())
-      .then((data) => setpending(data.count));
+      .then((data) => setPending(data.count || 0))
+      .catch(() => setPending(0));
   }, []);
 
   useEffect(() => {
@@ -111,10 +110,9 @@ const DashboardLayout = () => {
             <span className="text-slate-700 font-medium">
               Pending Applications
             </span>
-
             <span
               className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 
-                   rounded-full bg-red-500 text-white text-[11px] font-semibold"
+                 rounded-full bg-red-500 text-white text-[11px] font-semibold"
             >
               {pending}
             </span>
@@ -167,11 +165,7 @@ const DashboardLayout = () => {
           <span className="md:text-xl">
             <IoIosTime />
           </span>
-          <div className="flex items-center gap-2">
-            <span className="text-slate-700 font-medium">
-              Loan Applications
-            </span>
-          </div>
+          <span className="text-slate-700 font-medium">Loan Applications</span>
         </NavLink>
       </li>
       <li>
@@ -205,31 +199,32 @@ const DashboardLayout = () => {
           <span className="text-xs">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-credit-card-icon lucide-credit-card"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-credit-card"
             >
               <rect width="20" height="14" x="2" y="5" rx="2" />
               <line x1="2" x2="22" y1="10" y2="10" />
             </svg>
           </span>
-          <di className="font-semibold"> My Loans</di>
+          <div className="font-semibold text-slate-700">My Loans</div>
         </NavLink>
       </li>
     </>
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="h-screen bg-slate-50 flex overflow-hidden">
       <title>MicroCredX-Dashboard</title>
-      <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col">
-        <div className="px-5 py-4 border-b border-slate-200">
+
+      <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 flex-col sticky top-0 h-screen overflow-y-auto">
+        <div className="px-5 py-4 border-b border-slate-200 bg-white/90 backdrop-blur">
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-xl overflow-hidden ring-1 ring-emerald-100 bg-emerald-50 flex items-center justify-center">
               <img
@@ -258,7 +253,7 @@ const DashboardLayout = () => {
           </ul>
         </nav>
 
-        <div className="px-4 py-3 border-t border-slate-300 text-[11px] text-slate-600">
+        <div className="px-4 py-3 border-t border-slate-200 text-[11px] text-slate-600 bg-white/90">
           Microloan management made simple.
         </div>
       </aside>
@@ -304,11 +299,11 @@ const DashboardLayout = () => {
         </div>
       )}
 
-      <div className="flex-1 flex flex-col">
-        <header className="h-17 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6">
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="h-16 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center justify-between px-4 md:px-6 shrink-0">
           <div className="flex items-center gap-3">
             <button
-              className="md:hidden p-1 rounded-md border border-slate-200 text-slate-600"
+              className="md:hidden p-1.5 rounded-md border border-slate-200 text-slate-600"
               onClick={() => setOpen(true)}
             >
               ☰
@@ -325,7 +320,7 @@ const DashboardLayout = () => {
 
           <div className="flex items-center gap-3 text-xs text-slate-500">
             <div className="hidden sm:flex flex-col items-end leading-tight">
-              <span className="font-medium text-slate-700 truncate max-w-[140px]">
+              <span className="font-medium text-slate-700 truncate max-w-[160px]">
                 {user?.displayName || user?.email}
               </span>
               <span className="text-[11px] capitalize">
@@ -346,7 +341,7 @@ const DashboardLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 px-3 sm:px-4 md:px-6 py-4 md:py-5">
+        <main className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 py-4 md:py-5">
           <div className="max-w-6xl mx-auto">
             <Outlet />
           </div>

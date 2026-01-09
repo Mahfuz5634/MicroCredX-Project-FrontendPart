@@ -76,13 +76,6 @@ const LoanDetails = () => {
     <main className="bg-slate-50 min-h-screen">
       <section className="pt-10 pb-16">
         <div className="container mx-auto px-4">
-          <div className="text-xs text-slate-500 mb-4">
-            <span className="cursor-pointer hover:text-emerald-600">Home</span>{" "}
-            /{" "}
-            <span className="cursor-pointer hover:text-emerald-600">Loans</span>{" "}
-            / <span className="text-slate-700">{title}</span>
-          </div>
-
           <div className="grid gap-8 lg:grid-cols-[1.2fr,0.9fr] lg:items-start">
             <section className="rounded-3xl bg-white border border-slate-100 shadow-sm p-5 md:p-7">
               <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -179,7 +172,6 @@ const LoanDetails = () => {
                 </div>
               </div>
 
-              {/* features */}
               <div className="mt-8">
                 <h2 className="text-sm font-semibold text-slate-900">
                   Key features
@@ -205,7 +197,6 @@ const LoanDetails = () => {
             </section>
 
             <aside className="space-y-5">
-              {/* image */}
               {image && (
                 <div className="overflow-hidden rounded-3xl border border-slate-100 bg-slate-100 shadow-sm">
                   <img
@@ -217,7 +208,6 @@ const LoanDetails = () => {
                 </div>
               )}
 
-              {/* apply box */}
               <div className="rounded-3xl border border-emerald-100 bg-emerald-50/70 p-5 shadow-sm">
                 <h3 className="text-sm font-semibold text-slate-900">
                   Ready to apply?
