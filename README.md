@@ -1,8 +1,8 @@
-# 🏦 LoanLink - Microloan Request & Approval Tracker System
+# 🏦 MicroCredx - Microloan Request & Approval Tracker System
 
 ## 📋 Project Overview
 
-LoanLink is a comprehensive web-based microloan management system designed to streamline the loan application, review, and approval process for small financial organizations, NGOs, and microloan providers. The platform connects borrowers with loan officers and administrators through an intuitive dashboard system.
+MicroCresx is a comprehensive web-based microloan management system designed to streamline the loan application, review, and approval process for small financial organizations, NGOs, and microloan providers. The platform connects borrowers with loan officers and administrators through an intuitive dashboard system.
 
 ## 🌐 Live URL
 
